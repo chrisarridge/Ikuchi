@@ -1,7 +1,7 @@
 /**
 ***	@file Provides all the rendering functions for Ikuchi.
 ***	@author Chris Arridge, Lancaster University <c.arridge@lancaster.ac.uk>
-***	@version 0.2
+***	@version 0.3
 ***	@copyright Lancaster University (2019)
 ***	@licence TBD.
 **/
@@ -15,6 +15,8 @@ var gLastFrameTime = new Date().getTime();
 var gPlanetTexture;
 var gPlanetImageElement;
 var gPlanetMaterial;
+var gNorthLabel;
+var gSouthLabel;
 
 
 /**
@@ -95,6 +97,7 @@ function initRendering() {
 }
 
 
+
 /**
 *** When the window is resized this function updates the camera projection
 *** matrix and rendering window size.
@@ -122,7 +125,13 @@ function animate(t) {
 	// the speedup factor (simulation seconds per real time) and then multiply
 	// by the angular rotation rate for the planet.
 	dt = t - gLastFrameTime;
-	if (params.rotatePlanet) params.rotationPhase += dt*1e-3*params.speedUp*(2.0*Math.PI/(params.rotationPeriod*3600.0));
+	if (params.rotatePlanet) {
+		if (params.rotationReversed) {
+			params.rotationPhase -= dt*1e-3*params.speedUp*(2.0*Math.PI/(params.rotationPeriod*3600.0));
+		} else {
+			params.rotationPhase += dt*1e-3*params.speedUp*(2.0*Math.PI/(params.rotationPeriod*3600.0));
+		}
+	}
 	setPlanetSystemRotationMatrix();
 
 	gRenderer.render(gScene, gCamera);
@@ -224,7 +233,47 @@ function makePlanet() {
 	var objPlanetRotationAxisVector = new THREE.ArrowHelper(new THREE.Vector3(0.0,0.0,1.0),
 											new THREE.Vector3(0.0,0.0,0.0),
 											5.0, 0x0000ff);
+	objPlanetRotationAxisVector.name='Rotation Axis Vector';
 	group.add(objPlanetRotationAxisVector);
+
+	function textTexture(text) {
+		canvas = document.createElement('canvas');
+		canvas.width = 256;
+		canvas.height = 256;
+		ctx = canvas.getContext('2d');
+
+		// Set background.
+		ctx.fillStyle = 'rgb(64,64,64)';
+		ctx.strokeStyle = '';
+		ctx.lineWidth = '0px'
+		ctx.fillRect(0,0,255,255);
+
+		// Draw text.
+		ctx.textBaseline = 'middle';
+		ctx.textAlign = 'center';
+		ctx.fillStyle = 'rgb(255,255,255)';
+		ctx.strokeStyle = '';
+		ctx.lineWidth = '0px';
+		ctx.font = 'Bold 192px sans-serif';
+		ctx.fillText(text,128,128);
+		tmp = new THREE.Texture(canvas);
+		tmp.needsUpdate = true;
+		return(tmp);
+	}
+
+	textureNorth = textTexture('N');
+	var spriteMaterialNorth = new THREE.SpriteMaterial({map: textureNorth});
+	var spriteNorth = new THREE.Sprite(spriteMaterialNorth);
+	spriteNorth.position.set(0.0,0.0,1.25);
+	spriteNorth.scale.set(0.25,0.25,0.25);
+	group.add(spriteNorth);
+
+	textureSouth = textTexture('S');
+	var spriteMaterialSouth = new THREE.SpriteMaterial({map: textureSouth});
+	var spriteSouth = new THREE.Sprite(spriteMaterialSouth);
+	spriteSouth.position.set(0.0,0.0,-1.25);
+	spriteSouth.scale.set(0.25,0.25,0.25);
+	group.add(spriteSouth);
 
 	// Add dipole field lines and dipole axis.
 	var objDipolePlusVector = new THREE.Group();
@@ -268,9 +317,7 @@ function makePlanetarySystem() {
 	var objEquatorialPlane = new THREE.Mesh(geomEquatorialPlane, new THREE.MeshBasicMaterial({color: 0x00bb00, side:THREE.DoubleSide, opacity: 0.1, transparent:true}));
 	objEquatorialPlane.translateZ(0.01);
 	group.add(objEquatorialPlane);
-	var objPlanetRotationAxisVector = new THREE.ArrowHelper(new THREE.Vector3(0.0,0.0,1.0),
-											new THREE.Vector3(0.0,0.0,0.0),
-											5.0, 0x0000ff);
+
 	group.add(makePlanet());
 
 	group.name = 'PlanetarySystem';

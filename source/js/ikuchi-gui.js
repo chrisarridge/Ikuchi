@@ -1,7 +1,7 @@
 /**
 ***	@file Provides all the GUI functions for Ikuchi.
 ***	@author Chris Arridge, Lancaster University <c.arridge@lancaster.ac.uk>
-***	@version 0.2
+***	@version 0.3
 ***	@copyright Lancaster University (2019)
 ***	@licence TBD.
 **/
@@ -43,6 +43,7 @@ var params = {
 	rotationZ: 0.0,
 	rotationPhase: 0.0,
 	rotationPeriod: 24.0,
+	rotationReversed: false,
 
 	// For the planet selection.
 	planet: '- -',
@@ -57,6 +58,27 @@ var params = {
 	setViewTop: function() {gCamera.position.set(0.0,0.0,10.0);},
 	setViewOblque: function() {gCamera.position.set(5.77,5.77,5.77);},
 
+	// Button to render to SVG. Inspired by https://www.marciot.com/blog-demos/three-to-svg/.
+	goCaptureSVG: function () {
+		var w = window.innerWidth;
+		var h = window.innerHeight;
+		var newWindow = window.open('', '', 'width='+w.toString()+', height='+h.toString());
+		var svgCodeContainer = newWindow.document.createElement('textarea');
+		svgCodeContainer.id = 'source';
+		svgCodeContainer.cols = 120;
+		svgCodeContainer.rows = 40;
+		newWindow.document.body.appendChild(svgCodeContainer)
+
+		svgRenderer = new THREE.SVGRenderer();
+		svgRenderer.setClearColor(0xffffff);
+		svgRenderer.setSize(w, h);
+		svgRenderer.setQuality('low');
+		svgCodeContainer.appendChild(svgRenderer.domElement);
+		svgRenderer.render(gScene,gCamera);
+
+		newWindow.document.getElementById('source').value = svgCodeContainer.innerHTML.replace(/<path/g,"\n<path");
+	},
+
 	// Move the simulation to a given planet at a given time.
 	goPlanet: function() {
 		// Convert the time into a unix timestamp (in milliseconds) so that
@@ -69,6 +91,7 @@ var params = {
 		switch(params.planet) {
 			case 'Earth':
 				params.rotationPeriod = 24.0;
+				updateRotationReversed(false);
 				params.rotationY = rotyEarth(t.getTime());
 				params.rotationZ = rotzEarth(t.getTime()) % 360.0;
 				updateFieldColat(10.1);
@@ -78,6 +101,7 @@ var params = {
 				break;
 			case 'Jupiter':
 				params.rotationPeriod = 9.925;
+				updateRotationReversed(false);
 				params.rotationY = rotyJupiter(t.getTime());
 				params.rotationZ = rotzJupiter(t.getTime()) % 360.0;
 				updateFieldOrigin('(-0.01,0.0,-0.01)');
@@ -87,6 +111,7 @@ var params = {
 				break;
 			case 'Saturn':
 				params.rotationPeriod = 10.0 + (33.0*60 + 38.0)/3600.0;
+				updateRotationReversed(false);
 				params.rotationY = rotySaturn(t.getTime());
 				params.rotationZ = rotzSaturn(t.getTime()) % 360.0;
 				updateFieldOrigin('(0.0,0.0,0.04)');
@@ -96,6 +121,7 @@ var params = {
 				break;
 			case 'Uranus':
 				params.rotationPeriod = 17.0 + (14.0*60 + 24.0)/3600.0;
+				updateRotationReversed(true);
 				params.rotationY = rotyUranus(t.getTime());
 				params.rotationZ = rotzUranus(t.getTime()) % 360.0;
 				updateFieldOrigin('(-0.02,0.02,-0.31)');
@@ -105,6 +131,7 @@ var params = {
 				break;
 			case 'Neptune':
 				params.rotationPeriod = 16.0 + (6.0*60 + 36.0)/3600.0;
+				updateRotationReversed(false);
 				params.rotationY = rotyNeptune(t.getTime());
 				params.rotationZ = rotzNeptune(t.getTime()) % 360.0;
 				updateFieldOrigin('(0.17,0.46,-0.24)');
@@ -136,6 +163,8 @@ function initGui()
 	gui.add(params, 'fieldPoleLongitude').name('Dipole Longitude').min(0.0).max(360.0).step(5.0).onChange(updateFieldLong).listen();
 	gui.add(params, 'fieldOrigin').name('Dipole Centre').onFinishChange(updateFieldOrigin).listen();
 	gui.add(params, 'rotationPeriod').name('Rotation Period').min(9.0).max(29.0).step(0.05).listen();
+	gui.add(params, 'rotationReversed').name('Reverse Rotation').onChange(updateRotationReversed).listen();
+	gui.add(params, 'goCaptureSVG').name('Capture SVG Code');
 
 	// quick button to change views
 	var guiViewFolders = gui.addFolder('Views');
@@ -214,6 +243,23 @@ function updatePlanet(val) {
 		default:
 			throw new Error("Unknown planet name");
 	}
+}
+
+
+
+/**
+*** Called when the rotation orientation of the planet is changed. Sets the
+*** parameter and changes the rotation axis vector object.
+**/
+function updateRotationReversed(val) {
+	params.rotationReversed = val;
+	gScene.getObjectByName('Rotation Axis Vector').matrix = new THREE.Matrix4().identity();
+	if (params.rotationReversed) {
+		gScene.getObjectByName('Rotation Axis Vector').rotateX(Math.PI);
+	} else {
+		gScene.getObjectByName('Rotation Axis Vector').rotateX(0.0);
+	}
+	gScene.getObjectByName('Rotation Axis Vector').updateMatrix();
 }
 
 
