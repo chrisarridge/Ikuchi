@@ -1,5 +1,9 @@
 # Change history
 
+## Version 0.31 - 2019-08-16
+* Fixed labelling error in Uranus solstices.
+* Fixed GUI update error.
+
 ## Version 0.3 - 2019-08-16
 * Added code to capture SVG version of onscreen image. Opens a new browser
 	window with a textarea containing the SVG code that can be cut and pasted

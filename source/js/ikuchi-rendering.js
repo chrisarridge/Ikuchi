@@ -1,7 +1,7 @@
 /**
 ***	@file Provides all the rendering functions for Ikuchi.
 ***	@author Chris Arridge, Lancaster University <c.arridge@lancaster.ac.uk>
-***	@version 0.3
+***	@version 0.31
 ***	@copyright Lancaster University (2019)
 ***	@licence TBD.
 **/

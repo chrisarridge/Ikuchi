@@ -1,7 +1,7 @@
 /**
 ***	@file Provides all the GUI functions for Ikuchi.
 ***	@author Chris Arridge, Lancaster University <c.arridge@lancaster.ac.uk>
-***	@version 0.3
+***	@version 0.31
 ***	@copyright Lancaster University (2019)
 ***	@licence TBD.
 **/
@@ -208,7 +208,7 @@ function updatePlanet(val) {
 		case 'Earth':
 			params.time = nowStr;
 			guiPlanetEvents.remove()
-			guiPlanetEvents = guiFolderPlanets.add(params, 'events', ['Now','Vernal Equinox','NH Solstice','Autumnal Equinox','SH Solstice']).name('Events').onFinishChange(updatePlanetEvent);
+			guiPlanetEvents = guiFolderPlanets.add(params, 'events', ['Now','Vernal Equinox','NH Summer Solstice','Autumnal Equinox','SH Summer Solstice']).name('Events').onFinishChange(updatePlanetEvent);
 //			guiPlanetSatellites.remove()
 //			guiPlanetSatellites = guiFolderPlanets.add(params, 'satellites', ['None','Moon']).name('Satellites')
 			break;
@@ -222,21 +222,21 @@ function updatePlanet(val) {
 		case 'Saturn':
 			params.time = nowStr;
 			guiPlanetEvents.remove()
-			guiPlanetEvents = guiFolderPlanets.add(params, 'events', ['Now','Vernal Equinox','NH Solstice','Autumnal Equinox','SH Solstice','Cassini SOI']).name('Events').onFinishChange(updatePlanetEvent);
+			guiPlanetEvents = guiFolderPlanets.add(params, 'events', ['Now','Vernal Equinox','NH Summer Solstice','Autumnal Equinox','SH Summer Solstice','Cassini SOI']).name('Events').onFinishChange(updatePlanetEvent);
 //			guiPlanetSatellites.remove()
 //			guiPlanetSatellites = guiFolderPlanets.add(params, 'satellites', ['None','Enc/Tit','Mim/Enc/Tet/Dio/Rhe/Tit/Iap']).name('Satellites')
 			break;
 		case 'Uranus':
 			params.time = nowStr;
 			guiPlanetEvents.remove()
-			guiPlanetEvents = guiFolderPlanets.add(params, 'events', ['Now','Voyager 2','Vernal Equinox','NH Solstice','Autumnal Equinox','SH Solstice',]).name('Events').onFinishChange(updatePlanetEvent);
+			guiPlanetEvents = guiFolderPlanets.add(params, 'events', ['Now','Voyager 2','Vernal Equinox','NH Summer Solstice','Autumnal Equinox','SH Summer Solstice',]).name('Events').onFinishChange(updatePlanetEvent);
 //			guiPlanetSatellites.remove()
 //			guiPlanetSatellites = guiFolderPlanets.add(params, 'satellites', ['None','Mir/Ari/Umb/Tit/Obe']).name('Satellites')
 			break;
 		case 'Neptune':
 			params.time = nowStr;
 			guiPlanetEvents.remove()
-			guiPlanetEvents = guiFolderPlanets.add(params, 'events', ['Now','Voyager 2','Vernal Equinox','NH Solstice','Autumnal Equinox','SH Solstice',]).name('Events').onFinishChange(updatePlanetEvent);
+			guiPlanetEvents = guiFolderPlanets.add(params, 'events', ['Now','Voyager 2','Vernal Equinox','NH Summer Solstice','Autumnal Equinox','SH Summer Solstice',]).name('Events').onFinishChange(updatePlanetEvent);
 //			guiPlanetSatellites.remove()
 //			guiPlanetSatellites = guiFolderPlanets.add(params, 'satellites', ['None','Triton','Pro/Tri/Ner']).name('Satellites')
 			break;
@@ -253,11 +253,10 @@ function updatePlanet(val) {
 **/
 function updateRotationReversed(val) {
 	params.rotationReversed = val;
-	gScene.getObjectByName('Rotation Axis Vector').matrix = new THREE.Matrix4().identity();
 	if (params.rotationReversed) {
-		gScene.getObjectByName('Rotation Axis Vector').rotateX(Math.PI);
+		gScene.getObjectByName('Rotation Axis Vector').rotation.set(-Math.PI/2.0,0.0,0.0);
 	} else {
-		gScene.getObjectByName('Rotation Axis Vector').rotateX(0.0);
+		gScene.getObjectByName('Rotation Axis Vector').rotation.set(Math.PI/2.0,0.0,0.0);
 	}
 	gScene.getObjectByName('Rotation Axis Vector').updateMatrix();
 }
@@ -346,11 +345,11 @@ function updatePlanetEvent(val) {
 					params.time = nowStr;
 					params.goPlanet();
 					break;
-				case 'NH Solstice':
+				case 'NH Summer Solstice':
 					params.time = '2019-06-21';
 					params.goPlanet();
 					break;
-				case 'SH Solstice':
+				case 'SH Summer Solstice':
 					params.time = '2019-12-22';
 					params.goPlanet();
 					break;
@@ -384,7 +383,7 @@ function updatePlanetEvent(val) {
 					params.time = '2009-08-11';
 					params.goPlanet();
 					break;
-				case 'NH Solstice':
+				case 'NH Summer Solstice':
 					params.time = '2018-05-23';
 					params.goPlanet();
 					break;
@@ -392,7 +391,7 @@ function updatePlanetEvent(val) {
 					params.time = '1995-11-19';
 					params.goPlanet();
 					break;
-				case 'SH Solstice':
+				case 'SH Summer Solstice':
 					params.time = '2002-10-25';
 					params.goPlanet();
 					break;
@@ -412,19 +411,19 @@ function updatePlanetEvent(val) {
 					params.time = nowStr;
 					params.goPlanet();
 					break;
-				case 'Vernal Equinox':
+				case 'Autumnal Equinox':
 					params.time = '1966-02-03';
 					params.goPlanet();
 					break;
-				case 'NH Solstice':
+				case 'SH Summer Solstice':
 					params.time = '1985-10-06';
 					params.goPlanet();
 					break;
-				case 'Autumnal Equinox':
+				case 'Vernal Equinox':
 					params.time = '2007-12-16';
 					params.goPlanet();
 					break;
-				case 'SH Solstice':
+				case 'NH Summer Solstice':
 					params.time = '2030-04-19';
 					params.goPlanet();
 					break;
@@ -448,7 +447,7 @@ function updatePlanetEvent(val) {
 					params.time = '2038-02-28';
 					params.goPlanet();
 					break;
-				case 'NH Solstice':
+				case 'NH Summer Solstice':
 					params.time = '2078-11-14';
 					params.goPlanet();
 					break;
@@ -456,7 +455,7 @@ function updatePlanetEvent(val) {
 					params.time = '1955-04-11';
 					params.goPlanet();
 					break;
-				case 'SH Solstice':
+				case 'SH Summer Solstice':
 					params.time = '1997-02-26';
 					params.goPlanet();
 					break;
