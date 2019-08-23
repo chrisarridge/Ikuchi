@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<title>Ikuchi 0.3 (2019-08-16) - Simple Magnetosphere Viewer</title>
+		<title>Ikuchi 0.5a (2019-08-23) - Simple Magnetosphere Viewer</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 		<link rel="stylesheet" href="css/ikuchi.css">
 	</head>
 
 	<body>
+		<div id="settings-gui-container"></div>
 		<script type='text/javascript' src="js/three.min.js"></script>
 		<script type='text/javascript' src="js/OrbitControls.js"></script>
 		<script type='text/javascript' src="js/WebGL.js"></script>
@@ -15,8 +16,9 @@
 		<script type='text/javascript' src='js/SVGRenderer.js'></script>
 		<script type='text/javascript' src='js/dat.gui.min.js'></script>
 		<script type='text/javascript' src='js/ikuchi-pregenerated.js'></script>
-		<script type='text/javascript' src='js/ikuchi-rendering.js'></script>
-		<script type='text/javascript' src='js/ikuchi-gui.js'></script>
+		<script type='text/javascript' src='js/ikuchi-planets.js'></script>
+		<script type='text/javascript' src='js/ikuchi-ringsandstuff.js'></script>
+		<script type='text/javascript' src='js/ikuchi.js'></script>
 
 		<script>
 			// if WebGL is not available then issue an error message
@@ -24,12 +26,15 @@
 				document.body.appendChild(WEBGL.getWebGLErrorMessage());
 			}
 
-			initGui();
-			initRendering();
-			window.scene = gScene;
-			window.THREE = THREE;
-			tlast = performance.now();
-			requestAnimationFrame(animate);
+			ikuchi = new Ikuchi();
+			ikuchi.addPlanet(planetDefault);
+			ikuchi.addPlanet(planetEarth);
+			ikuchi.addPlanet(planetJupiter);
+			ikuchi.addPlanet(planetSaturn);
+			ikuchi.addPlanet(planetUranus);
+			ikuchi.addPlanet(planetNeptune);
+			ikuchi.init();
+			ikuchi.run();
 
 		</script>
 	</body>

@@ -5,7 +5,11 @@ required for reproducing the plots that test the fits."""
 import numpy as np
 import matplotlib.pyplot as pl
 import base64
+import datetime
+import platform
 import scipy.optimize as opt
+import scipy
+import matplotlib
 import spiceypy
 
 show_fit_plots = False
@@ -74,7 +78,19 @@ for p in data:
 		ad -= 360
 
 with open('../js/ikuchi-pregenerated.js','w') as fh:
-	fh.write('// All data and functions in this file are auto-generated. Do not modify.\n\n\n')
+	fh.write('// All data and functions in this file are auto-generated. Do not modify.\n')
+	fh.write('// Build date: {}\n'.format(datetime.datetime.now().__str__()))
+	fh.write('// Build platform: {} {}\n'.format(platform.platform(),platform.processor()))
+	fh.write('// Build Python version: {}\n'.format(platform.python_version()))
+	fh.write('// Build NumPy version: {}\n'.format(np.__version__))
+	fh.write('// Build SciPy version: {}\n'.format(scipy.__version__))
+	fh.write('// Build Matplotlib version: {}\n'.format(matplotlib.__version__))
+	fh.write('// Build SPICE version: {}\n'.format(spiceypy.tkvrsn('toolkit')))
+	fh.write('// SPICE Kernels used:\n')
+	for i in range(spiceypy.ktotal('ALL')):
+		[file,type,source,handle] = spiceypy.kdata(i, 'ALL')
+		fh.write('//  {} ({})\n'.format(file,type))
+	fh.write('\n\n\n')
 
 	# We have full time series of the two rotation angles we need, so now we
 	# do fits and write the results of the fits to javascript functions we
@@ -158,7 +174,34 @@ with open('../js/ikuchi-pregenerated.js','w') as fh:
 		fh.write('}\n\n\n')
 		print('[ikuchi-build] Errors for {}: rotz_rms={:8.6f} rotz_max={:8.6f} roty_rms={:8.6f} roty_max={:8.6f}'.format(p, rotz_rms, rotz_max, roty_rms, roty_max))
 
-	# Finally, we take the textures and turn them into base64 encoded strings.
+
+	# Generate function to map optical depth to opacity.
+	print('[ikuchi-build] Generating optical depth to opacity mapping')
+	optical_depth = np.array([1e-8,1e-7,1e-6,1e-5,1e-4,1e-3,1e-2,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0,2.5,10.0])
+	opacity = 1-np.exp(-optical_depth)
+	ln_opacity = np.log(opacity)
+	desired_opacity = np.array([0.01,0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.7,0.8,0.9,0.97,0.98,0.99])
+	logistic = lambda x, L, x0, k: L/(1.0 + np.exp(-k*(x-x0)))
+	fun = lambda x, a, b, c, x0: logistic(x, 1.0, x0, a/x + b + c/(x*x))
+	popt, pcov = opt.curve_fit(fun, ln_opacity, desired_opacity, p0=[1.0,0.0,0.0,-1.5])
+
+	if show_fit_plots:
+		x = 10**np.linspace(-8,8,500)
+		pl.plot(optical_depth, desired_opacity, 'o')
+		pl.plot(x, fun(np.log(1-np.exp(-x)), popt[0], popt[1], popt[2], popt[3]))
+		pl.xscale('log')
+		pl.show()
+	print('[ikuchi-build] Optical depth function fit parameters: a={:8.6f} b={:8.6f} c={:8.6f} x0={:8.6f}'.format(popt[0], popt[1], popt[2], popt[3]))
+
+	fh.write('// Optical depth to opacity function\n')
+	fh.write('function opticalDepthToOpacity(opticalDepth) {\n')
+	fh.write('\tvar x = Math.log(1-Math.exp(-opticalDepth));\n')
+	fh.write('\tvar k = {}/x + {}/(x*x) + {};\n'.format(popt[0],popt[2],popt[1]))
+	fh.write('\treturn(1.0/(1.0 + Math.exp(-k*(x-{}))));\n'.format(popt[3]))
+	fh.write('}\n\n')
+
+
+	# Convert textures and turn them into base64 encoded strings.
 	print('[ikuchi-build] Encoding textures')
 
 	fh.write('// All textures are sourced from http://planetpixelemporium.com/planets.html.\n')

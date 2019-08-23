@@ -1,5 +1,23 @@
 # Change history
 
+## Version 0.5a - 2019-08-23
+* Refactored code.
+* Added moon rendering.
+* Fixed memory leaks.
+* Fixed orthographic camera bug.
+* Modified how orbital and equatorial planes are rendered.
+* Fixed ring rendering double-sided bug.
+* Added dipole equatorial plane rendering.
+* Removed optical depth->opacity ring rendering - just solid with a settable opacity.
+* Changed discrete ring rendering to use lines rather than meshes.
+
+## Version 0.4 - 2019-08-20
+* Fixed scroll bar error.
+* Added options to modify colours of different items.
+* Added planetary ring rendering.
+* Added orthographic camera and option to switch between orthographic and perspective views.
+* Added build step which constructs a function for translating between ring optical depth and rendering opacity.
+
 ## Version 0.31 - 2019-08-16
 * Fixed labelling error in Uranus solstices.
 * Fixed GUI update error.

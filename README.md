@@ -37,7 +37,6 @@ The dipole magnetic field can be adjusted with the three parameters in the main 
 
 ## Future work
 Features that are being developed are:
-* Save snapshots in SVG format for inclusion in high quality publication figures.
 * Customise the colours/look of various vectors.
 * Render natural satellites and planetary rings (including being able to select subsets to render).
 * Add magnetopause and bow shock models.
