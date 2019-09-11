@@ -5,10 +5,9 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 		<link rel="stylesheet" href="css/ikuchi.css">
-	</head>
 
-	<body>
-		<div id="settings-gui-container"></div>
+		<!--Josh: Moved external file calls to head to prevent page being loaded
+	 	before scripts are initialised -->
 		<script type='text/javascript' src="js/three.min.js"></script>
 		<script type='text/javascript' src="js/OrbitControls.js"></script>
 		<script type='text/javascript' src="js/WebGL.js"></script>
@@ -19,6 +18,10 @@
 		<script type='text/javascript' src='js/ikuchi-planets.js'></script>
 		<script type='text/javascript' src='js/ikuchi-ringsandstuff.js'></script>
 		<script type='text/javascript' src='js/ikuchi.js'></script>
+	</head>
+
+	<body>
+		<div id="settings-gui-container"></div>
 
 		<script>
 			// if WebGL is not available then issue an error message
@@ -35,7 +38,6 @@
 			ikuchi.addPlanet(planetNeptune);
 			ikuchi.init();
 			ikuchi.run();
-
 		</script>
 	</body>
 </html>

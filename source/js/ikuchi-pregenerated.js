@@ -17,7 +17,13 @@
 //  C:/Users/arridge/Documents/Data/SPICE//generic_kernels/fk/RSSD0002.TF (TEXT)
 //  frames.fk (TEXT)
 
-
+//Fits for Default Planet
+function rotzDefault(t){
+	return(0.0);
+}
+function rotyDefault(t){
+	return(0.0);
+}
 
 // Fits for Earth
 // Rotz RMS=0.012278 deg max(|residual|)=0.036861 deg

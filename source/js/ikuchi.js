@@ -55,15 +55,15 @@ class Ikuchi {
 		// Colours.
 		this.bgColour = '#FDFFFC';
 		this.ambientColour = '#050505';
-		this.sunColour = '#ffffff';
+		this.sunColour = '#FFFFFF';
 		this.sunVectorColour = '#EA8634';
 		this.orbitVectorColour = '#4BA92A';
 		this.spinVectorColour = '#84112D';
 		this.dipoleVectorColour = '#235789';
 		this.fieldLineColour = '#F1D302';
-		this.equatorialPlaneColour = '#00ffff';
+		this.equatorialPlaneColour = '#00FFFF';
 		this.orbitalPlaneColour = '#161925';
-		this.dipoleEquatorialPlaneColour = '#ff55ee';
+		this.dipoleEquatorialPlaneColour = '#FF55EE';
 		this.moonOrbitColour = '#69C6A0';
 		this.discreteRingColour = '#6E2347'
 		this.wideRingColour = '#6E2347'
@@ -317,7 +317,7 @@ class Ikuchi {
 		// init GUI.
 		this.gui = new dat.GUI({height : 5 * 32 - 1});
 		this.gui.add(this, 'autoRotate').name('Auto rotate')
-		this.gui.add(this, 'speedUp').name('Speed').min(100.0).max(10000).step(1.0).listen();
+		this.gui.add(this, 'speedUp').name('Speed').min(100.0).max(10000.0).step(1.0).listen();
 		this.gui.add(this, 'rotationY').name('Obliquity').min(-90.0).max(90.0).step(5.0).listen();
 		this.gui.add(this, 'rotationZ').name('Orbital Phase').min(0.0).max(360.0).step(10.0).listen();
 		this.gui.add(this, 'dipolePoleColatitude').name('Dipole Colatitude').min(0.0).max(180.0).step(5.0).listen().onChange(this.onChangeDipoleProperties.bind(this));
@@ -343,14 +343,14 @@ class Ikuchi {
 		this.guiFolderViews.add(this, 'setViewOblique').name('Oblique');
 
 		this.guiFolderOptions = this.gui.addFolder('Options');
-		this.guiFolderOptions.add(this, 'drawFieldLines').name('Draw field lines');
+		this.guiFolderOptions.add(this, 'drawFieldLines').name('Draw field lines').onChange(this.onChangefieldLineVisibilty.bind(this));
 		this.guiFolderOptions.add(this, 'drawNorthSouthLabels').name('Draw north/south labels').onChange(this.onChangeDrawNSLabels.bind(this));
 		this.guiFolderOptions.add(this, 'cameraType', ['Perspective','Orthographic']).name('Camera').onChange(this.onChangeCamera.bind(this));
 
 		this.guiFolderColours = this.gui.addFolder('Colours');
 		this.guiFolderColours.addColor(this, 'bgColour').name('Background').onChange(this.onChangeBackgroundColour.bind(this));
-		this.guiFolderColours.addColor(this, 'moonOrbitColour').name('Moon orbits');
-		this.guiFolderColours.addColor(this, 'fieldLineColour').name('Field lines');
+		this.guiFolderColours.addColor(this, 'moonOrbitColour').name('Moon orbits').onChange(this.onChangemoonOrbitColor.bind(this));
+		this.guiFolderColours.addColor(this, 'fieldLineColour').name('Field lines').onChange(this.onChangefieldLineColor.bind(this));
 		this.guiFolderColours.addColor(this, 'ambientColour').name('Ambient light').onChange(this.onChangeAmbientLightColour.bind(this));
 		this.guiFolderColours.addColor(this, 'sunColour').name('Sunlight').onChange(this.onChangeSunlightColour.bind(this));
 		this.guiFolderColours.addColor(this, 'sunVectorColour').name('Sun vector').onChange(this.onChangeSunVectorColour.bind(this));
@@ -675,8 +675,28 @@ class Ikuchi {
 
 	}
 
+	onChangefieldLineVisibilty(){
+		if (this.drawFieldLines){
+			this.oDipole.mat.visible = true;
+		}
+		else{
+			this.oDipole.mat.visible = false;
+		}
+	}
+
 	onChangeBackgroundColour() {
 		this.scene.background = new THREE.Color(this.bgColour);
+	}
+
+	onChangemoonOrbitColor(){
+		let cPlanet = this.planetObjects.get(this.planet)
+		for (let i=0; i<cPlanet.moonNames.length; i++) {
+			this.moons[i].getOrbitObject().material.color.setStyle(this.moonOrbitColour);
+		}
+	}
+
+	onChangefieldLineColor(){
+		this.oDipole.mat.color.setStyle(this.fieldLineColour);
 	}
 
 	onChangeAmbientLightColour() {

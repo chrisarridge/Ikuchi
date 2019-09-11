@@ -1,5 +1,10 @@
 # Change history
 
+## Version 0.5b - 2019-09-
+* Fixed field lines visibility switch
+* Fixed moon orbit traces and field lines colour selectors
+* Minor bug fixes
+
 ## Version 0.5a - 2019-08-23
 * Refactored code.
 * Added moon rendering.

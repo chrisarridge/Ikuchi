@@ -1,5 +1,5 @@
 /**
-***	@file Provides all the GUI functions for Ikuchi.
+***	@file Input file containing each planet featuring in Ikuchi
 ***	@author Chris Arridge, Lancaster University <c.arridge@lancaster.ac.uk>
 ***	@version 0.5a
 ***	@copyright Lancaster University (2019)
@@ -22,8 +22,8 @@ planetDefault = {
 	dipolePoleColatitude: 0.0,
 	dipolePoleLongitude: 0.0,
 	dipoleOrigin: [0.0,0.0,0.0],
-	yFunction: function(t) {return(0.0);},
-	zFunction: function(t) {return(0.0);},
+	yFunction: rotyDefault,
+	zFunction: rotzDefault,
 	moonNames: [],
 	moonSemimajor: [],
 	moonPeriod: [],
