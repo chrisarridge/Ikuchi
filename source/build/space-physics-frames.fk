@@ -1,79 +1,88 @@
-Space Physics Frame Definition Kernel File
-========================================================================
+Badger toolkit Space Physics Frame Definition Kernel File
+================================================================================
 
 	This frame kernel defines a number of space physics mission-independent
-	frames that are used within Badger and that are not ``built'' into the
-	SPICE toolkit.
+	frames which are not ``built'' into the SPICE toolkit. This is heavily
+	inspired by the RSSD0002.TF frame kernel written by
+	Jorge Diaz del Rio (MIG/ESA and RSSD/ESA; 2006-2008). This kernel is part
+	of the Badger space plasma forward modelling toolkit
 
 
 Version and Date
-========================================================================
-	Version 0.1 -- 27 April 2019 -- Chris Arridge, Lancaster University
-		Initial version.
-	Version 0.2 -- 30 July 2019 -- Chris Arridge, Lancaster University
-		Added Mercury, Venus, Earth and Mars.
+--------------------------------------------------------------------------------
 
+	Rev 3 - 2019-09-17 - Chris Arridge <c.arridge@lancaster.ac.uk>.
+		* Updated notes and comments.
 
-References
-========================================================================
+	Rev 2 - 2019-07-30 - Chris Arridge <c.arridge@lancaster.ac.uk>.
+		* Added planetary-solar orbital frames for Mercury, Venus, Earth and Mars.
 
-1. ``Frames Required Reading''
-
-2. ``Kernel Pool Required Reading''
-
-3. Franz and Harper. (2002) ``Heliospheric Coordinate Systems''
-Space Science, 50, 217ff.
-
-4. Hapgood,M. (1992). ``Space physics coordinate transformations: A user
-guide'' Planetary and Space Science, 40, 711-717
-
-5. Russell, C.T. (1971). ``Geophysical Coordinate Transformations''
-Cosmic Electrodynamics, v.2, 184-196
+	Rev 1 - 2019-04-27 - Chris Arridge <c.arridge@lancaster.ac.uk>.
 
 
 Contact Information
-========================================================================
+--------------------------------------------------------------------------------
+	Chris Arridge, Lancaster University.
+	Email: c.arridge@lancaster.ac.uk
+	GitHub: https://github.com/chrisarridge
 
-Chris Arridge, Lancaster University, c.arridge@lancaster.ac.uk
+
+References
+--------------------------------------------------------------------------------
+
+	1. ``Frames Required Reading''
+
+	2. ``Kernel Pool Required Reading''
+
+	3. Jorge Diaz del Rio (MIG/ESA and RSSD/ESA) ''Generic Frame Definition Kernel
+		File for ESA Planetary Missions'' (2005-2008).
+
+	4. Franz and Harper. (2002) ``Heliospheric Coordinate Systems''
+	Space Science, 50, 217ff.
+
+	5. Hapgood,M. (1992). ``Space physics coordinate transformations: A user
+	guide'' Planetary and Space Science, 40, 711-717
+
+	6. Russell, C.T. (1971). ``Geophysical Coordinate Transformations''
+	Cosmic Electrodynamics, v.2, 184-196
 
 
 Generic Frame Names and NAIF ID Codes
-========================================================================
+--------------------------------------------------------------------------------
+	The following names and NAIF ID codes are assigned to the generic frames
+	defined in this kernel file:
 
-The following names and NAIF ID codes are assigned to the generic
-frames defined in this kernel file:
-
-Frame Name		NAIF ID		Center		Description
-------------	-------		-------		-------------------------------
-Generic Dynamic Frames names/IDs:
-HSO				1500199		Mercury		Mercury-centric Solar Orbital
-VSO				1500299		Venus		Venus-centric Solar Orbital
-GSE				1500399		Earth		Geocentric Solar Ecliptic
-MSO				1500499		Mars		Mars-centric Solar Orbital
-JSO				1500599		Jupiter		Jupiter-centric Solar Orbital
-KSO				1500699		Saturn		Saturn-centric Solar Orbital
-USO				1500799		Uranus		Uranus-centric Solar Orbital
-NSO				1500899		Neptune		Neptune-centric Solar Orbital
+	Frame Name		NAIF ID		Centre		Description
+	------------	-------		-------		-------------------------------
+	HSO				1500199		Mercury		Mercury-centric Solar Orbital
+	VSO				1500299		Venus		Venus-centric Solar Orbital
+	GSE				1500399		Earth		Geocentric Solar Ecliptic
+	MSO				1500499		Mars		Mars-centric Solar Orbital
+	JSO				1500599		Jupiter		Jupiter-centric Solar Orbital
+	KSO				1500699		Saturn		Saturn-centric Solar Orbital
+	USO				1500799		Uranus		Uranus-centric Solar Orbital
+	NSO				1500899		Neptune		Neptune-centric Solar Orbital
 
 
-\begintext
 
 Planetary-centric Solar Orbital frames (*SO)
+================================================================================
+\begintext
 
-Definition:
------------
-A planet-centric Solar Orbital frame is defined as follows:
+	Definition
+	-----------
+	A planet-centric Solar Orbital frame is defined as follows:
 
--  The position of the Sun relative to the planet is the primary vector:
-+X axis points from the planet to the Sun;
+	-  The position of the Sun relative to the planet is the primary vector:
+	+X axis points from the planet to the Sun;
 
--  The inertially referenced velocity of the Sun relative to the planet
-is the secondary vector: +Y axis is the component of this
-velocity vector orthogonal to the +X axis;
+	-  The inertially referenced velocity of the Sun relative to the planet
+	is the secondary vector: +Y axis is the component of this
+	velocity vector orthogonal to the +X axis;
 
--  +Z axis completes the right-handed system;
+	-  +Z axis completes the right-handed system;
 
--  the origin of this frame is the planets' center of mass.
+	-  the origin of this frame is the planets' center of mass.
 
 
 \begindata

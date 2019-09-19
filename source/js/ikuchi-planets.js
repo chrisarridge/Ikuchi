@@ -1,14 +1,27 @@
 /**
 ***	@file Input file containing each planet featuring in Ikuchi
 ***	@author Chris Arridge, Lancaster University <c.arridge@lancaster.ac.uk>
-***	@version 0.5a
+***	@version 4
 ***	@copyright Lancaster University (2019)
-***	@licence TBD.
+***	@licence GNU GPL v3.
 **/
 
-// Uranus and Neptune Equinox times from: Meeus, J (1997) 'Equinoxes and solstices on
-// Uranus and Neptune' J. Brit. Astronomical Assoc. 107(6), p332,
-// http://adsabs.harvard.edu/full/1997JBAA..107..332M
+/**
+*** Copright (C) 2019 Chris Arridge, Lancaster University
+***
+*** This program is free software: you can redistribute it and/or modify
+*** it under the terms of the GNU General Public License as published by
+*** the Free Software Foundation, either version 3 of the License, or
+*** (at your option) any later version.
+***
+*** This program is distributed in the hope that it will be useful,
+*** but WITHOUT ANY WARRANTY; without even the implied warranty of
+*** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*** GNU General Public License for more details.
+***
+*** You should have received a copy of the GNU General Public License
+*** along with this program.  If not, see <https://www.gnu.org/licenses/>.
+**/
 
 planetDefault = {
 	name: 'Default',
@@ -34,6 +47,17 @@ planetDefault = {
 	discreteRingNames: []
 }
 
+/** Definitions for Earth.
+***
+*** Equinox and solstice dates from https://en.wikipedia.org/wiki/Equinox.
+***
+*** Moon and ring data from https://en.wikipedia.org/wiki/Moon. Note that the
+*** Moon's orbit is simplified (as it is with the other planets).
+***
+*** Magnetic field angles from http://www.geomag.bgs.ac.uk/education/poles.html.
+*** For consistency with other planets in Ikuchi, we orient the magnetic field
+*** so that the pole colatitude is the location of the north magnetic pole.
+**/
 planetEarth = {
 	name: 'Earth',
 	equatorialRadius: 6378.137,
@@ -43,8 +67,8 @@ planetEarth = {
 	planetTexture: textureEarthDayMap,
 	eventLabels: ['Now','NH Summer Solstice','SH Summer Solstice','Vernal Equinox','Autumnal Equinox'],
 	eventTimes: ['2019-06-21','2019-12-22','2019-03-20','2019-09-23'],
-	dipolePoleColatitude: 10.1,
-	dipolePoleLongitude: 288.0,
+	dipolePoleColatitude: 170.65/*10.1*/,
+	dipolePoleLongitude: 106.83/*288.0*/,
 	dipoleOrigin: [0.0,0.0,0.0],
 	yFunction: rotyEarth,
 	zFunction: rotzEarth,
@@ -58,6 +82,13 @@ planetEarth = {
 	discreteRingNames: []
 }
 
+/** Definitions for Jupiter.
+***
+*** Moon and ring data from PDS: https://pds-rings.seti.org/jupiter/jupiter_tables.html
+***
+*** Eccentric dipole properties from Connerney, J.E.P. (1993) 'Magnetic fields
+*** of the outer planets' J. Geophys. Res. 98(E10) 18659-18679.
+**/
 planetJupiter = {
 	name: 'Jupiter',
 	equatorialRadius: 71492,
@@ -82,6 +113,15 @@ planetJupiter = {
 	discreteRingNames: []
 }
 
+/** Definitions for Saturn.
+***
+*** Equinox and solstice times from http://www.planetary.org/blogs/emily-lakdawalla/2016/06031044-oppositions-conjunctions-rpx.html
+***
+*** Moon and ring data from PDS: https://pds-rings.seti.org/saturn/saturn_tables.html
+***
+*** Eccentric dipole properties from Connerney, J.E.P. (1993) 'Magnetic fields
+*** of the outer planets' J. Geophys. Res. 98(E10) 18659-18679.
+**/
 planetSaturn = {
 	name: 'Saturn',
 	equatorialRadius: 60268,
@@ -115,6 +155,22 @@ planetSaturn = {
 	discreteRingVisible: [true]
 }
 
+
+/** Definitions for Uranus.
+***
+*** Equinox and solstice times are from Meeus, J (1997) 'Equinoxes and solstices on
+*** Uranus and Neptune' J. Brit. Astronomical Assoc. 107(6), p332,
+*** http://adsabs.harvard.edu/full/1997JBAA..107..332M
+***
+*** Moon and ring data from PDS: https://pds-rings.seti.org/uranus/uranus_tables.html
+***
+*** Eccentric dipole properties from Connerney, J.E.P. (1993) 'Magnetic fields
+*** of the outer planets' J. Geophys. Res. 98(E10) 18659-18679. Note that
+*** since the dipole properties were derived in a frame where the north pole
+*** was coincident with the rotational pole (i.e., opposite to the IAU
+*** definition we use here) the dipole z offset and latitude are swapped from
+*** those quoted in Connerney (1993).
+**/
 planetUranus = {
 	name: 'Uranus',
 	equatorialRadius: 25559,
@@ -124,9 +180,9 @@ planetUranus = {
 	planetTexture: textureUranus,
 	eventLabels: ['Now','Voyager 2','Vernal Equinox','NH Summer Solstice','Autumnal Equinox','SH Summer Solstice'],
 	eventTimes: ['1986-01-24','1966-02-03','1985-10-06','2007-12-16','2030-04-19'],
-	dipolePoleColatitude: 60.0,
+	dipolePoleColatitude: -60.0,
 	dipolePoleLongitude: 48.0,
-	dipoleOrigin: [-0.02,0.02,-0.31],
+	dipoleOrigin: [-0.02,0.02,0.31],
 	yFunction: rotyUranus,
 	zFunction: rotzUranus,
 	moonNames: ['Mab','Miranda','Ariel','Umbriel','Titania','Oberon'],
@@ -148,6 +204,17 @@ planetUranus = {
 	discreteRingVisible: [true,true,true,true,true,true,true,true,true,true]
 }
 
+/** Definitions for Neptune.
+***
+*** Equinox and solstice times are from Meeus, J (1997) 'Equinoxes and solstices on
+*** Uranus and Neptune' J. Brit. Astronomical Assoc. 107(6), p332,
+*** http://adsabs.harvard.edu/full/1997JBAA..107..332M
+***
+*** Moon and ring data from PDS: https://pds-rings.seti.org/neptune/neptune_tables.html
+***
+*** Eccentric dipole properties from Connerney, J.E.P. (1993) 'Magnetic fields
+*** of the outer planets' J. Geophys. Res. 98(E10) 18659-18679.
+**/
 planetNeptune = {
 	name: 'Neptune',
 	equatorialRadius: 24764,

@@ -1,25 +1,36 @@
 /**
 ***	@file Provides all the GUI functions for Ikuchi.
 ***	@author Chris Arridge, Lancaster University <c.arridge@lancaster.ac.uk>
-***	@version 0.5a
+***	@version 6
 ***	@copyright Lancaster University (2019)
-***	@licence TBD.
+***	@licence GNU GPL v3.
 **/
 
-/*
-white FDFFFC
-blue 235789
-purple 6E2347
-green 4BA92A
-red 	C1292E
-yellow F1D302
-dark 	161925
-cyan 69C6A0
-crimson 84112D
-peach D6704D
-orange EA8634
-*/
+/**
+*** Copright (C) 2019 Chris Arridge, Lancaster University
+***
+*** This program is free software: you can redistribute it and/or modify
+*** it under the terms of the GNU General Public License as published by
+*** the Free Software Foundation, either version 3 of the License, or
+*** (at your option) any later version.
+***
+*** This program is distributed in the hope that it will be useful,
+*** but WITHOUT ANY WARRANTY; without even the implied warranty of
+*** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*** GNU General Public License for more details.
+***
+*** You should have received a copy of the GNU General Public License
+*** along with this program.  If not, see <https://www.gnu.org/licenses/>.
+**/
+
+
+/*** @class Ikuchi app contained in class. ***/
 class Ikuchi {
+
+	/** Create instance of the Ikuchi app.
+	***
+	*** @constructor
+	**/
 	constructor() {
 		this.autoRotate = true;			// should the planet and sytem autorotate?
 		this.speedUp = 3600;			// speedup factor from reality (3600 means that in one second of real time, an hour has passed in the simulated view)
@@ -52,20 +63,20 @@ class Ikuchi {
 		this.drawNorthSouthLabels = true;
 		this.cameraType = 'Perspective';
 
-		// Colours.
-		this.bgColour = '#FDFFFC';
+		// Colours. (spare: red #C1292E, peach #D6704D)
+		this.bgColour = '#FDFFFC';						// white FDFFFC
 		this.ambientColour = '#050505';
 		this.sunColour = '#FFFFFF';
-		this.sunVectorColour = '#EA8634';
-		this.orbitVectorColour = '#4BA92A';
-		this.spinVectorColour = '#84112D';
-		this.dipoleVectorColour = '#235789';
-		this.fieldLineColour = '#F1D302';
+		this.sunVectorColour = '#EA8634';				// orange EA8634
+		this.orbitVectorColour = '#4BA92A';				// green 4BA92A
+		this.spinVectorColour = '#84112D';				// crimson 84112D
+		this.dipoleVectorColour = '#235789';			// blue 235789
+		this.fieldLineColour = '#F1D302';				// yellow F1D302
 		this.equatorialPlaneColour = '#00FFFF';
-		this.orbitalPlaneColour = '#161925';
+		this.orbitalPlaneColour = '#161925';			// dark 161925
 		this.dipoleEquatorialPlaneColour = '#FF55EE';
-		this.moonOrbitColour = '#69C6A0';
-		this.discreteRingColour = '#6E2347'
+		this.moonOrbitColour = '#69C6A0';				// cyan 69C6A0
+		this.discreteRingColour = '#6E2347'				// purple 6E2347
 		this.wideRingColour = '#6E2347'
 
 		// Plane transparency
@@ -93,72 +104,10 @@ class Ikuchi {
 		this.planetObjects = new Map();
 	}
 
-	nameToLabel(s,prefix) {
-		// strip out all whitespace, append an underscore
-		let label = (' ' + s).slice(1)
-		label = label.replace(/\s/g,'')
-		label = label.replace(/[^a-zA-Z0-9]+/,'')
-		return('_'+prefix+'_'+label)
-	}
-
-	setPerspectiveCamera() {
-		this.perspectiveCamera.position.copy(this.camera.position);
-		this.perspectiveCamera.rotation.copy(this.camera.rotation);
-		let targetX = this.controls.target.x;
-		let targetY = this.controls.target.y;
-		let targetZ = this.controls.target.z;
-		this.camera = this.perspectiveCamera;
-
-		// dipose of old controls
-		this.controls.dispose();
-
-		// make new controls
-		this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
-		this.controls.enableDamping = true;
-		this.controls.dampingFactor = 0.25;
-		this.controls.screenSpacePanning = false;
-		this.controls.minDistance = 2;
-		this.controls.maxDistance = 500;
-		this.controls.maxPolarAngle = 2.0*Math.PI;
-		this.controls.target.x = targetX;
-		this.controls.target.y = targetY;
-		this.controls.target.z = targetZ;
-	}
-
-	setOrthographicCamera() {
-		this.orthographicCamera.position.copy(this.camera.position);
-		this.orthographicCamera.rotation.copy(this.camera.rotation);
-		let targetX = this.controls.target.x;
-		let targetY = this.controls.target.y;
-		let targetZ = this.controls.target.z;
-		this.camera = this.orthographicCamera;
-
-		// dipose of old controls
-		this.controls.dispose();
-
-		// make new controls
-		this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
-		this.controls.enableDamping = true;
-		this.controls.dampingFactor = 0.25;
-		this.controls.screenSpacePanning = false;
-		this.controls.minDistance = 2;
-		this.controls.maxDistance = 500;
-		this.controls.maxPolarAngle = 2.0*Math.PI;
-		this.controls.target.x = targetX;
-		this.controls.target.y = targetY;
-		this.controls.target.z = targetZ;
-	}
-
-	setViewSun() {this.camera.position.set(10.0,0.0,0.0);}
-
-	setViewTop() {this.camera.position.set(0.0,0.0,10.0);}
-
-	setViewDawn() {this.camera.position.set(0.0,-10.0,0.0);}
-
-	setViewDusk() {this.camera.position.set(0.0,10.0,0.0);}
-
-	setViewOblique() {this.camera.position.set(5.77,5.77,5.77);}
-
+	/** Add planet (defined in an object literal - see ikuchi-planets.js) to the app.
+	***
+	*** @param {object} pl The object literal defining the planet.
+	**/
 	addPlanet(pl) {
 		this.planetObjects.set(pl.name, pl);
 		for (let i=0; i<pl.moonNames.length; i++) {
@@ -172,6 +121,7 @@ class Ikuchi {
 		}
 	}
 
+	/** Initalise the window, GUI, scene and controls so that the app can function. **/
 	init() {
 		this.initScene();
 		this.initRenderer();
@@ -180,12 +130,14 @@ class Ikuchi {
 		window.addEventListener('resize', this.onWindowResize.bind(this), false);
 	}
 
+	/** Setup the THREE.js scene (lighting, cameras, main objects). **/
 	initScene() {
 		this.scene = new THREE.Scene();
 		this.scene.background = new THREE.Color(this.bgColour);
 		THREE.Object3D.defaultUp = new THREE.Vector3(0.0,0.0,1.0);
 
-		// Setup the cameras.
+		// Setup the cameras - note that both orthographic and perspective
+		// cameras are setup now, but only one is used at any given time.
 		let aspect = window.innerWidth/window.innerHeight;
 		let orthoHeight = this.orthoWidth/aspect;
 		this.perspectiveCamera = new THREE.PerspectiveCamera(75.0, aspect, 0.1, 1000 );
@@ -232,6 +184,13 @@ class Ikuchi {
 		this.onChangeDipoleEquatorialPlane();
 	}
 
+	/** Initialise a planet object and add to the scene.
+	***
+	*** This method builds objects for the planet itself (a textured/plain colour
+	*** sphere), north and south pole labels, rotation axis vector, latitude/
+	*** longitude grid, and the magnetic field. These objects are encapsulated in
+	*** a THREE.js group: "Planet".
+	**/
 	initPlanet() {
 		this.oPlanetGroup = new THREE.Group();
 		this.oPlanetGroup.name = 'Planet';
@@ -288,12 +247,18 @@ class Ikuchi {
 		this.oPlanetGroup.add(this.oMagneticField)
 	}
 
+	/** Initialise an empty planetary system object and add to the scene.
+	***
+	*** This THREE.js group will eventually be populated with moons and a
+	*** ring system when planets are selected.
+	**/
 	initPlanetarySystem() {
 		this.oPlanetarySystemGroup = new THREE.Group();
 		this.oPlanetarySystemGroup.name = 'Planetary System';
 		this.oPlanetarySystemGroup.matrixAutoUpdate = false;
 	}
 
+	/** Initialise the WebGL renderer, setting the size based on the browser window. **/
 	initRenderer() {
 		// Setup the renderer.
 		this.renderer = new THREE.WebGLRenderer({antialias: true});
@@ -302,8 +267,8 @@ class Ikuchi {
 		document.body.appendChild(this.renderer.domElement);
 	}
 
+	/** Initialise the orbit controls and attach to the camera and renderer. **/
 	initControls() {
-		// Setup controls.
 		this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
 		this.controls.enableDamping = true;
 		this.controls.dampingFactor = 0.25;
@@ -313,6 +278,11 @@ class Ikuchi {
 		this.controls.maxPolarAngle = 2.0*Math.PI;
 	}
 
+	/** Initialise GUI.
+	***
+	*** This method uses DAT.gui to build an interface to allow the user to
+	*** select planets and to adjust the parameters.
+	**/
 	initGui() {
 		// init GUI.
 		this.gui = new dat.GUI({height : 5 * 32 - 1});
@@ -377,6 +347,14 @@ class Ikuchi {
 //		this.guiFolderDipoleEquatorPlane.add(this, 'dipoleEquatorialPlaneTransparency').name('Transparent');
 	}
 
+	/** Callback which updates the scene and renders a new frame.
+	***
+	*** The method computes the timestep between this frame and the last (so
+	*** we can maintain frame-rate independent animation), steps the animation
+	*** features (moon orbits, planet rotation) and then renders the new frame.
+	***
+	*** @param {number} t Timestamp for this animation frame.
+	**/
 	animate(t) {
 		requestAnimationFrame(this.animate.bind(this));
 		this.controls.update();
@@ -386,33 +364,36 @@ class Ikuchi {
 		this.step(dt)
 		this.update()
 
-		let i;
-		for (i=0; i<this.moons.length; i++) {
-			this.moons[i].stepAndUpdate(dt)
-		}
-
 		this.renderer.render(this.scene, this.camera);
 		this.lastFrameTime = t;
 	}
 
+	/** Update the animations based on given stepsize.
+	***
+	*** Updates both the rotation state of the planet and the orbital position
+	*** of the moons (if present). The provided timestep (in ms) is converted
+	*** to a "simulation" timestep based on a speedup factor set in the GUI.
+	***
+	*** @param {number} dt Time step.
+	**/
 	step(dt) {
-		// Update rotation state of planet, based on speed up and 1/fps: the
-		// time (t) is ms per frame, so we need to convert to seconds, multiply by
-		// the speedup factor (simulation seconds per real time) and then multiply
-		// by the angular rotation rate for the planet.
 		if (this.autoRotate) {
+
+			// Rotation phase is adjusted based on the angular rotation rate
+			// (2pi/Period) of the planet.
 			if (this.rotationReversed) {
 				this.planetRotationPhase -= dt*1e-3*this.speedUp*(2.0*Math.PI/(this.rotationPeriod*3600.0));
 			} else {
 				this.planetRotationPhase += dt*1e-3*this.speedUp*(2.0*Math.PI/(this.rotationPeriod*3600.0));
 			}
-		}
 
-		// Update the position of all the moons.
-//		for (i=0; i<gMoons.length; i++) gMoons[i].step(dt*1e-3*params.speedUp);
-//		gRenderer.render(gScene, gCamera);
+			// Update each moon.
+			let i;
+			for (i=0; i<this.moons.length; i++) this.moons[i].stepAndUpdate(dt*1e-3*this.speedUp);
+		}
 	}
 
+	/** Update the rotation matrices for the planet and planetary sytem. **/
 	update() {
 		this.oPlanetGroup.matrix = new THREE.Matrix4().makeRotationZ(this.planetRotationPhase);
 		let yMatrix = new THREE.Matrix4().makeRotationY(this.rotationY*Math.PI/180.0);
@@ -420,11 +401,132 @@ class Ikuchi {
 		this.oPlanetarySystemGroup.matrix = zMatrix.multiply(yMatrix);
 	}
 
+	/** Starts the animation and rendering loop. **/
 	run() {
 		this.lastFrameTime = performance.now();
 		requestAnimationFrame(this.animate.bind(this));
 	}
 
+	/** Captures the current visualisation and generates SVG code for the user.
+	***
+	*** Generates a new browser window with a simple text area element to hold
+	*** the SVG code. The method then creates an instance of the SVGRenderer,
+	*** points the SVG Renderer to the textarea element, and then renders the
+	*** scene.
+	***
+	*** This code is based on blog posts and code by Felix Breuer:
+	*** http://blog.felixbreuer.net/2014/08/05/using-threejs-to-create-vector-graphics-from-3d-visualizations.html
+	*** https://github.com/fbreuer/threejs-examples
+	***
+	*** and Marcio L. Teixeira:
+	*** (https://mt236.wordpress.com/2016/03/26/using-three-js-to-render-to-svg/).
+	*** https://github.com/marciot/blog-demos/tree/master/three-to-svg
+	**/
+	captureSVG() {
+		let w = window.innerWidth;
+		let h = window.innerHeight;
+		let newWindow = window.open('', '', 'width='+w.toString()+', height='+h.toString());
+		let svgCodeContainer = newWindow.document.createElement('textarea');
+		svgCodeContainer.id = 'source';
+		svgCodeContainer.cols = 120;
+		svgCodeContainer.rows = 40;
+		newWindow.document.body.appendChild(svgCodeContainer)
+
+		let svgRenderer = new THREE.SVGRenderer();
+		svgRenderer.setClearColor(0xffffff);
+		svgRenderer.setSize(w, h);
+		svgRenderer.setQuality('high');
+		svgCodeContainer.appendChild(svgRenderer.domElement);
+		svgRenderer.render(this.scene,this.camera);
+
+		newWindow.document.getElementById('source').value = svgCodeContainer.innerHTML.replace(/<path/g,"\n<path");
+	}
+
+	/** Convert a moon or ring name to a label.
+	***
+	*** Strips out whitespace and other symbols that are not legal as
+	*** javascript variable names, then adds a prefix and underscore to
+	*** the start.
+	***
+	*** @param {string} s The moon or ring name to generate a label from.
+	*** @param {string} prefix The prefix to add.
+	**/
+	nameToLabel(s,prefix) {
+		// strip out all whitespace, append an underscore
+		let label = (' ' + s).slice(1)
+		label = label.replace(/\s/g,'')
+		label = label.replace(/[^a-zA-Z0-9]+/,'')
+		return('_'+prefix+'_'+label)
+	}
+
+	/** Change the current camera to use the perspective camera. **/
+	setPerspectiveCamera() {
+		// Copy over the position and orientation of the current camera.
+		this.perspectiveCamera.position.copy(this.camera.position);
+		this.perspectiveCamera.rotation.copy(this.camera.rotation);
+		let targetX = this.controls.target.x;
+		let targetY = this.controls.target.y;
+		let targetZ = this.controls.target.z;
+		this.camera = this.perspectiveCamera;
+
+		// dipose of old controls
+		this.controls.dispose();
+
+		// make new controls
+		this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
+		this.controls.enableDamping = true;
+		this.controls.dampingFactor = 0.25;
+		this.controls.screenSpacePanning = false;
+		this.controls.minDistance = 2;
+		this.controls.maxDistance = 500;
+		this.controls.maxPolarAngle = 2.0*Math.PI;
+		this.controls.target.x = targetX;
+		this.controls.target.y = targetY;
+		this.controls.target.z = targetZ;
+	}
+
+	/** Change the current camera to use the orthographic camera. **/
+	setOrthographicCamera() {
+		// Copy over the position and orientation of the current camera.
+		this.orthographicCamera.position.copy(this.camera.position);
+		this.orthographicCamera.rotation.copy(this.camera.rotation);
+		let targetX = this.controls.target.x;
+		let targetY = this.controls.target.y;
+		let targetZ = this.controls.target.z;
+		this.camera = this.orthographicCamera;
+
+		// dipose of old controls
+		this.controls.dispose();
+
+		// make new controls
+		this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
+		this.controls.enableDamping = true;
+		this.controls.dampingFactor = 0.25;
+		this.controls.screenSpacePanning = false;
+		this.controls.minDistance = 2;
+		this.controls.maxDistance = 500;
+		this.controls.maxPolarAngle = 2.0*Math.PI;
+		this.controls.target.x = targetX;
+		this.controls.target.y = targetY;
+		this.controls.target.z = targetZ;
+	}
+
+	/** Change camera position to be located at the subsolar point. **/
+	setViewSun() {this.camera.position.set(10.0,0.0,0.0);}
+
+	/** Change camera position to be located above the X-Y plane ("above"). **/
+	setViewTop() {this.camera.position.set(0.0,0.0,10.0);}
+
+	/** Change camera position to be located at the dawn terminator. **/
+	setViewDawn() {this.camera.position.set(0.0,-10.0,0.0);}
+
+	/** Change camera position to be located at the dusk terminator. **/
+	setViewDusk() {this.camera.position.set(0.0,10.0,0.0);}
+
+	/** Change camera position to be located at the above the post-noon sector. **/
+	setViewOblique() {this.camera.position.set(5.77,5.77,5.77);}
+
+	/** Update dipole world matrix based on a new dipole colatitude/longitude and origin. **/
 	onChangeDipoleProperties() {
 		// Set the orientation and location of the dipole and add.
 		let yMatrix = new THREE.Matrix4().makeRotationY(this.dipolePoleColatitude*Math.PI/180.0);
@@ -433,6 +535,7 @@ class Ikuchi {
 		this.oMagneticField.matrix = tMatrix.multiply(zMatrix.multiply(yMatrix));
 	}
 
+	/** Update obliquity and orbtial phase angles for a user-selected timestamp. **/
 	onChangeTime() {
 		let t = new Date(this.time);
 		let cPlanet = this.planetObjects.get(this.planet);
@@ -441,6 +544,7 @@ class Ikuchi {
 		this.update();
 	}
 
+	/** Update planet object when planet is a retrograde rotator. **/
 	onChangeRotationReversed() {
 		if (this.rotationReversed) {
 			this.oSpinAxisVector.rotation.set(-Math.PI/2.0,0.0,0.0);
@@ -450,6 +554,7 @@ class Ikuchi {
 		this.oSpinAxisVector.updateMatrix();
 	}
 
+	/** Update the planet texture map - callback for DOM img element containing texture. **/
 	onPlanetTextureLoadOrChange() {
 		if (this.planetTexture) this.planetTexture.dispose()
 		this.planetTexture = new THREE.Texture(this.planetImageElement)
@@ -458,13 +563,13 @@ class Ikuchi {
 		this.planetMaterial.needsUpdate = true;
 	}
 
+	/** Update orbital plane rendering based on user selection. **/
 	onChangeOrbitalPlane() {
 		let tmp = this.scene.getObjectByName('Orbital Plane')
 		if (typeof(tmp)!='undefined') {
 			this.scene.remove(tmp)
 			this.oOrbitalPlane.dispose()
 		}
-		console.log(this.orbitalPlane)
 		switch(this.orbitalPlane) {
 			case 'Wireframe':
 				this.oOrbitalPlane.makeWireframe(this.orbitalPlaneColour,'#bbbbbb', 100);
@@ -479,12 +584,14 @@ class Ikuchi {
 		}
 	}
 
+	/** Update orbital plane colours and opacity based on user selection. **/
 	onChangeOrbitalPlaneProperties() {
 		let tmp = this.oOrbitalPlane.get()
 		tmp.material.color.setStyle(this.orbitalPlaneColour);
 		tmp.material.opacity = this.orbitalPlaneOpacity;
 	}
 
+	/** Update equatorial plane rendering based on user selection. **/
 	onChangeEquatorialPlane() {
 		let tmp = this.oPlanetarySystemGroup.getObjectByName('Equatorial Plane')
 		if (typeof(tmp)!='undefined') {
@@ -506,12 +613,14 @@ class Ikuchi {
 		}
 	}
 
+	/** Update equatorial plane colours and opacity based on user selection. **/
 	onChangeEquatorialPlaneProperties() {
 		let tmp = this.oEquatorialPlane.get()
 		tmp.material.color.setStyle(this.equatorialPlaneColour);
 		tmp.material.opacity = this.equatorialPlaneOpacity;
 	}
 
+	/** Update dipole equatorial plane rendering based on user selection. **/
 	onChangeDipoleEquatorialPlane() {
 		let tmp = this.oMagneticField.getObjectByName('Dipole Equatorial Plane')
 		if (typeof(tmp)!='undefined') {
@@ -533,12 +642,19 @@ class Ikuchi {
 		}
 	}
 
+	/** Update dipole equatorial plane colours and opacity based on user selection. **/
 	onChangeDipoleEquatorialPlaneProperties() {
 		let tmp = this.oDipoleEquatorialPlane.get()
 		tmp.material.color.setStyle(this.dipoleEquatorialPlaneColour);
 		tmp.material.opacity = this.dipoleEquatorialPlaneOpacity;
 	}
 
+	/** Change planet on response to the user selecting a planet from the planet GUI combobox.
+	***
+	*** Rermoves the moons and rings from the current planetary system
+	*** object, change the planet propertie, update the GUI, and add new
+	*** moons/rings.
+	**/
 	onChangePlanet() {
 		let i;
 
@@ -623,6 +739,7 @@ class Ikuchi {
 		}
 	}
 
+	/** Show/hide moons and their orbits. **/
 	onChangeMoonVisibility() {
 		let cPlanet = this.planetObjects.get(this.planet)
 		for (let i=0; i<cPlanet.moonNames.length; i++) {
@@ -631,12 +748,14 @@ class Ikuchi {
 		}
 	}
 
+	/** Show/hide rings. **/
 	onChangeRingVisibility() {
 		for (let i=0; i<this.rings.length; i++) {
 			this.rings[i].get().visible = this.ringVisible[this.nameToLabel(this.rings[i].name,'ring')]
 		}
 	}
 
+	/** When a planet event is selected, set the correct time, update the GUI, and update the visualisation. **/
 	onSelectEvent() {
 		if (this.events=='Now') {
 			let now = new Date();
@@ -653,6 +772,7 @@ class Ikuchi {
 		}
 	}
 
+	/** Change camera type. **/
 	onChangeCamera() {
 		switch(this.cameraType) {
 			case 'Perspective':
@@ -664,6 +784,7 @@ class Ikuchi {
 		}
 	}
 
+	/** Show/hide north/south labels. **/
 	onChangeDrawNSLabels() {
 		if (this.drawNorthSouthLabels) {
 			this.northLabel.get().visible = true;
@@ -675,6 +796,7 @@ class Ikuchi {
 
 	}
 
+	/** Show/hide field lines. **/
 	onChangefieldLineVisibilty(){
 		if (this.drawFieldLines){
 			this.oDipole.mat.visible = true;
@@ -684,10 +806,12 @@ class Ikuchi {
 		}
 	}
 
+	/** Update the background colour. **/
 	onChangeBackgroundColour() {
 		this.scene.background = new THREE.Color(this.bgColour);
 	}
 
+	/** Update the colour of moon orbits. **/
 	onChangemoonOrbitColor(){
 		let cPlanet = this.planetObjects.get(this.planet)
 		for (let i=0; i<cPlanet.moonNames.length; i++) {
@@ -695,68 +819,50 @@ class Ikuchi {
 		}
 	}
 
+	/** Update the colour of the field lines. **/
 	onChangefieldLineColor(){
 		this.oDipole.mat.color.setStyle(this.fieldLineColour);
 	}
 
+	/** Update the ambient light colour.	**/
 	onChangeAmbientLightColour() {
 		this.ambientLight.color.setStyle(this.ambientColour);
 	}
 
+	/** Update the Sun light colour. **/
 	onChangeSunlightColour() {
 		this.sunLight.color.setStyle(this.sunColour);
 	}
 
+	/** Update the colour of the planet-Sun vector. **/
 	onChangeSunVectorColour() {
 		this.oPlanetSunVector.cone.material.color.setStyle(this.sunVectorColour);
 		this.oPlanetSunVector.line.material.color.setStyle(this.sunVectorColour);
 	}
 
+	/** Update the colour of the orbital velocity vector. **/
 	onChangeOrbitVectorColour() {
 		this.oOrbitVector.cone.material.color.setStyle(this.orbitVectorColour);
 		this.oOrbitVector.line.material.color.setStyle(this.orbitVectorColour);
 	}
 
+	/** Update the colour of the planet spin axis vector. **/
 	onChangeSpinVectorColour() {
 		this.oSpinAxisVector.cone.material.color.setStyle(this.spinVectorColour);
 		this.oSpinAxisVector.line.material.color.setStyle(this.spinVectorColour);
 	}
 
+	/** Update the colour of the dipole axis vector **/
 	onChangeDipoleVectorColour() {
 		this.oDipoleVector.cone.material.color.setStyle(this.dipoleVectorColour);
 		this.oDipoleVector.line.material.color.setStyle(this.dipoleVectorColour);
 	}
 
-
-	/**
-	*** When the window is resized this method updates the camera projection
-	*** matrix and rendering window size.
-	**/
+	/** Update the renderer and camera when the window is resized. **/
 	onWindowResize() {
 		this.camera.aspect = window.innerWidth/window.innerHeight;
 		this.camera.updateProjectionMatrix();
 		this.renderer.setSize(window.innerWidth, window.innerHeight);
-	}
-
-	captureSVG() {
-		// Button to render to SVG. Inspired by https://www.marciot.com/blog-demos/three-to-svg/.
-		let w = window.innerWidth;
-		let h = window.innerHeight;
-		let newWindow = window.open('', '', 'width='+w.toString()+', height='+h.toString());
-		let svgCodeContainer = newWindow.document.createElement('textarea');
-		svgCodeContainer.id = 'source';
-		svgCodeContainer.cols = 120;
-		svgCodeContainer.rows = 40;
-		newWindow.document.body.appendChild(svgCodeContainer)
-
-		let svgRenderer = new THREE.SVGRenderer();
-		svgRenderer.setClearColor(0xffffff);
-		svgRenderer.setSize(w, h);
-		svgRenderer.setQuality('low');
-		svgCodeContainer.appendChild(svgRenderer.domElement);
-		svgRenderer.render(this.scene,this.camera);
-
-		newWindow.document.getElementById('source').value = svgCodeContainer.innerHTML.replace(/<path/g,"\n<path");
 	}
 
 }

@@ -1,27 +1,149 @@
+/**
+*** Style sheets for Ikuchi.
+*** Version 3
+***	Copyright (c) Lancaster University (2019)
+***	Licence GNU GPL v3.
+**/
+
+/**
+*** Copright (C) 2019 Chris Arridge, Lancaster University
+***
+*** This program is free software: you can redistribute it and/or modify
+*** it under the terms of the GNU General Public License as published by
+*** the Free Software Foundation, either version 3 of the License, or
+*** (at your option) any later version.
+***
+*** This program is distributed in the hope that it will be useful,
+*** but WITHOUT ANY WARRANTY; without even the implied warranty of
+*** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*** GNU General Public License for more details.
+***
+*** You should have received a copy of the GNU General Public License
+*** along with this program.  If not, see <https://www.gnu.org/licenses/>.
+**/
+
+
 body {
 	color: #ffffff;
-	font-family: Arial, Helvetica, sans-serif;
+	font-family: Segui UI, Arial, Helvetica, sans-serif;
 	font-size: 14px;
 	background-color: #000000;
 	margin: 0px;
-   padding: 0px;
+	padding: 0px;
 }
 
-#info {
-	color: #ffffff;
-	position: absolute;
-	top: 0px;
-	width: 100%;
-	padding: 5px;
-	box-sizing: border-box;
+p {
+	font-family: Segui UI, Arial, Helvetica, sans-serif;
+	font-size: 16px;
+	colour: #fdfffc;
+}
+
+h1 {
+	font-family: Segui UI, Arial, Helvetica, sans-serif;
+	font-size: 24px;
+	colour: #fdfffc;
 }
 
 a {
-	color: red;
+	color: #ea8634;
+	font-weight: bold;
 }
 
+
+/* This bit of CSS is to remove the scrollbars that appear by default. */
 canvas {
 	display: block;
 	vertical-align: top;
 	horizontal-align: left;
+}
+
+
+/* Container for the about dialog box */
+.about-box-container {
+	display: none;		/* starts off hidden */
+	position: fixed;
+	z-index: 1;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+}
+
+
+/* Container for the about box close button and the close button itself. */
+.about-box-close-container {
+	margin-right: 0px;
+	margin-left: auto;
+	width: 16px;
+	height: 16px;
+	float: right;
+}
+.close-about-box {
+	color: #ffffff;
+	font-size: 28px;
+	font-weight: bold;
+}
+
+.close-about-box:hover {
+	cursor: pointer;
+}
+
+
+/* Content of the about box */
+.about-box-content {
+	width: 1200px;
+	height: 600px;
+	border: 2px solid #888888;
+	padding: 20px;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 50px;
+	margin-bottom: auto;
+	position: relative;
+	display: block;
+	background-image: url('../images/background.png');
+	background-color: #000000;
+	background-repeat: no-repeat;
+	background-position: center;
+}
+
+
+/* Container for the text in the about box */
+.about-box-text {
+	width: 700px;
+	height: 590px;
+	border-radius: 5px 5px 5px 5px;
+	padding: 5px;
+	margin-left: 5px;
+	margin-right: auto;
+	margin-top: 5px;
+	margin-bottom: auto;
+	background-color: #00000088;		/* slightly transparent */
+	position: relative;
+	display: inline-block;
+}
+
+
+/* About button itself */
+.about-button {
+	background-color: #4ba92a;
+	box-shadow: 0px 0px 4px 4px rgba(24,55,14,64);
+	color: white;
+	border: none;
+	text-align: center;
+	text-decoration: none;
+	display: block;
+	font-size: 16px;
+	border-radius: 32px;
+	width: 32px;
+	height: 32px;
+	bottom: 32px;
+	left: 32px;
+	position: absolute;
+	opacity: .9;
+}
+
+.about-button:hover {
+	background-color: #409124;
+	cursor: pointer;
 }

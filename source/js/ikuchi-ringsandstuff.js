@@ -1,13 +1,39 @@
 /**
 ***	@file Provides all the rendering functions for Ikuchi.
 ***	@author Chris Arridge, Lancaster University <c.arridge@lancaster.ac.uk>
-***	@version 0.5a
+***	@version 4
 ***	@copyright Lancaster University (2019)
-***	@licence TBD.
+***	@licence GNU GPL v3.
+**/
+
+/**
+*** Copright (C) 2019 Chris Arridge, Lancaster University
+***
+*** This program is free software: you can redistribute it and/or modify
+*** it under the terms of the GNU General Public License as published by
+*** the Free Software Foundation, either version 3 of the License, or
+*** (at your option) any later version.
+***
+*** This program is distributed in the hope that it will be useful,
+*** but WITHOUT ANY WARRANTY; without even the implied warranty of
+*** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*** GNU General Public License for more details.
+***
+*** You should have received a copy of the GNU General Public License
+*** along with this program.  If not, see <https://www.gnu.org/licenses/>.
 **/
 
 
+/** @class Class to contain a rectangular plane that might be solid or wireframe.
+***
+*** This is used to represent orbital and equatorial planes.
+***/
 class Plane {
+	/** Create instance of the a plane.
+	***
+	*** @constructor
+	*** @param {number} size The dimensions of the plane.
+	**/
 	constructor(name,size) {
 		this.name = name
 		this.size = size
@@ -16,6 +42,12 @@ class Plane {
 		this.object = null
 	}
 
+	/** Make a new wireframe plane.
+	***
+	*** @param {colour} majorColour The colour of the major lines on the plane.
+	*** @param {colour} minorColour The colour of the minor lines on the plane.
+	*** @param {number} resolution Number of minor blocks that the plane divided into.
+	**/
 	makeWireframe(majorColour, minorColour, resolution) {
 		this.dispose()
 		this.object = new THREE.GridHelper(this.size, resolution, majorColour, minorColour);
@@ -26,6 +58,11 @@ class Plane {
 		this.object.matrixAutoUpdate = false;
 	}
 
+	/** Make a new solid plane.
+	***
+	*** @param {colour} colour The colour of the plane.
+	*** @param {number} opacity The opaque is the plane.
+	**/
 	makeSolid(colour, opacity) {
 		this.dispose()
 		this.geom = new THREE.PlaneGeometry(this.size, this.size, 1, 1);
@@ -37,8 +74,13 @@ class Plane {
 		this.object.matrixAutoUpdate = false;
 	}
 
+	/** Get the THREE.js object representing the plane.
+	***
+	*** @returns {THREE.js Object} Object.
+	**/
 	get() {return(this.object);}
 
+	/** Disposes of the material and geometry. **/
 	dispose() {
 		if (this.mat) {
 			this.mat.dispose()
@@ -51,7 +93,24 @@ class Plane {
 	}
 }
 
+
+
+/** @class Class to contain a piece of text rendered to a texture and used as a sprite.
+***
+*** This is used to add text that always faces the camera, but is located within
+*** 3D world space.
+***/
 class TextSprite {
+
+	/** Create instance of the a text sprite.
+	***
+	*** @todo At the moment this is very hard-coded. It will be nice to
+	*** make this more general, perhaps using CSS to specify the font
+	*** and canvas properties.
+	***
+	*** @constructor
+	*** @param {number} size The size of the canvas [pixels].
+	**/
 	constructor(text, size) {
 		this.canvas = document.createElement('canvas');
 		this.canvas.width = size;
@@ -59,7 +118,7 @@ class TextSprite {
 		let ctx = this.canvas.getContext('2d');
 
 		// Set background.
-		ctx.fillStyle = 'rgb(64,64,64)';
+		ctx.fillStyle = '#404040';
 		ctx.strokeStyle = '';
 		ctx.lineWidth = '0px'
 		ctx.fillRect(0,0,255,255);
@@ -67,7 +126,7 @@ class TextSprite {
 		// Draw text.
 		ctx.textBaseline = 'middle';
 		ctx.textAlign = 'center';
-		ctx.fillStyle = 'rgb(255,255,255)';
+		ctx.fillStyle = '#ffffff';
 		ctx.strokeStyle = '';
 		ctx.lineWidth = '0px';
 		ctx.font = 'Bold 192px sans-serif';
@@ -82,8 +141,13 @@ class TextSprite {
 		this.sprite = new THREE.Sprite(this.mat);
 	}
 
+	/** Get the THREE.js object representing the text sprite.
+	***
+	*** @returns {THREE.js Object} Object.
+	**/
 	get() {return(this.sprite);}
 
+	/** Disposes of the material and geometry. **/
 	dispose() {
 		this.sprite.dispose();
 		this.mat.dispose();
@@ -94,21 +158,26 @@ class TextSprite {
 
 
 
-/**
-***	Make a THREE.Object3D group for a latitude/longitude grid.
-***
-***	@param nHalfLat {int} Number of parallels in the each hemisphere (default=1).
-***	@param nLong {int} Number of meridians (default=8).
-***	@param matParallel {THREE.LineBasicMaterial} Material for the parallels.
-***	@param matEquator {THREE.LineBasicMaterial} Material for the equatorial parallels.
-***	@param matMeridian {THREE.LineBasicMaterial} Material for the meridians.
-***	@param matPrimeMeridian {THREE.LineBasicMaterial} Material for the prime meridian.
-***	@returns {THREE.Object3D} Group object.
+/** @class Class to contain latitude/longitude grid for a planet in THREE.js.
 ***
 ***	@todo Needs modifying so that the planet can be represented by a biaxial
 ***	ellipsoid with separate polar and equatorial radii.
-**/
+*** @todo At the moment the colours are hard-coded. It will be nice to
+*** make this more general, perhaps using CSS to specify the line properties.
+*** @todo The number of points for each great circle is fixed at 64. Should
+*** make this a setting.
+***/
 class LatLongGrid {
+	/** Create instance of the latitude/longitude grid.
+	***
+	*** The total number of parallels (lines of constant latitude) is given
+	*** by numHalfLat*2 + 1. So if numHalfLat=2, then there will be five equally-
+	*** spaced parallels at +60, +30, 0, -30, -60 degrees.
+	***
+	*** @constructor
+	*** @param {number} numHalfLat Number of parallels in the each hemisphere.
+	*** @param {number} numLong Number of meridians.
+	**/
 	constructor(numHalfLat, numLong) {
 		this.numHalfLat = numHalfLat;
 		this.numLong = numLong;
@@ -123,6 +192,7 @@ class LatLongGrid {
 		this.objects = new Array();
 	}
 
+	/** Make the grid object. **/
 	makeGrid() {
 		let i=0;
 		let tmp;
@@ -168,8 +238,13 @@ class LatLongGrid {
 		}
 	}
 
+	/** Get the THREE.js object representing the text sprite.
+	***
+	*** @returns {THREE.js Object} Object.
+	**/
 	get() {return(this.object);}
 
+	/** Disposes of the material and geometry. **/
 	dispose() {
 		for (i=this.objects.length; i>0; i--) this.object.remove(this.objects[i])
 		for (i=this.geom.length; i>0; i--) this.geom[i].dispose();
@@ -181,14 +256,16 @@ class LatLongGrid {
 }
 
 
-/**
+
+/** Calculate dipole field line.
+***
 *** Return points along a dipole field line as a THREE.Path object. The field
 *** line is computed from -pi/2 to +pi/2 so that if the field line ends up
 *** being displaced from the origin of the planet, then the field line will
 *** disappear into the planet, and not 'float' above the surface.
 ***
-***	@param L {float} L-shell of the field line [>=1].
-***	@param n {int} Optional number of points to return along the field line (default 64).
+***	@param L {number} L-shell of the field line [>=1].
+***	@param n {number} Optional number of points to return along the field line (default 64).
 ***	@returns {THREE.Path} Path object containing points along the field line.
 **/
 function getDipolePath(L, n=64) {
@@ -208,7 +285,24 @@ function getDipolePath(L, n=64) {
 	return(path)
 }
 
+
+
+/** @class Class to contain a dipole magnetic field representation.
+***
+*** Contains a set of dipole field line objects (geometries and materials)
+*** that are contained in a THREE.js group.
+***
+*** @todo The number of points for each field line is fixed at 64. Should
+*** make this a setting. Alternatively, would be nice to use splines rather
+*** than just line segments.
+***/
 class Dipole {
+
+	/** Create instance of the dipole model.
+	***
+	*** @constructor
+	*** @param {colour} colour Colour of the field lines.
+	**/
 	constructor(colour) {
 		this.mat = new THREE.LineBasicMaterial({color: colour});
 		this.group = new THREE.Group();
@@ -218,6 +312,13 @@ class Dipole {
 		this.geoms = new Array();
 	}
 
+	/** Make all the field lines and add them to the THREE.js group.
+	***
+	*** @param {number} minLshell Minimum L-shell to compute a field line of [planet radii].
+	*** @param {number} maxLshell Maximum L-shell to compute a field line of [planet radii].
+	*** @param {number} stepLshell The step between each L-shell [planet radii].
+	*** @param {number} numLongs Number of meridians to generate field lines on.
+	**/
 	makeFieldLines(minLshell, maxLshell, stepLshell, numLongs) {
 		let long;
 		let i=0;
@@ -242,15 +343,35 @@ class Dipole {
 		}
 	}
 
+	/** Get the THREE.js object representing the dipole model.
+	***
+	*** @returns {THREE.js Object} Object.
+	**/
 	get() {return(this.group);}
 }
 
 
 
-
+/** @class Class to contain a discrete planetary ring.
+***
+*** Note that this is designed to be a simplified representation of a discrete
+*** ring, and is not supposed to have correct rendering/optical depth and so on.
+***
+*** This does not support (yet) elliptical/inclined rings.
+**/
 class DiscreteRing {
+	/** Create instance of the discrete ring.
+	***
+	*** The radius is in units of planetary radius.
+	***
+	*** @constructor
+	*** @param {number} radius Radius of the discrete ring (this is modelled as a single line).
+	*** @param {colour} colour Colour of the ring.
+	*** @param {number} opacity Opacity of the ring.
+	*** @param {boolean} transparent Whether or not the ring is transparent (if not, opacity will have no effect).
+	**/
 	constructor(name, radius, colour, opacity, transparent) {
-		this.name =name
+		this.name = name
 		let numSegments = Math.floor(2*Math.PI*(radius/0.1));
 		this.geom = new THREE.CircleGeometry(radius, numSegments);
 		this.geom.vertices.shift();		// remove the central vertex
@@ -260,15 +381,40 @@ class DiscreteRing {
 		this.object.matrixAutoUpdate = false;
 	}
 
+	/** Get the THREE.js object representing the ring.
+	***
+	*** @returns {THREE.js Object} Object.
+	**/
 	get() {return(this.object);}
 
+	/** Disposes of the material and geometry. **/
 	dispose() {
 		this.geom.dispose()
 		this.mat.dispose()
 	}
 }
 
+
+
+/** @class Class to contain a broad planetary ring.
+***
+*** Note that this is designed to be a simplified representation of a broad
+*** ring, and is not supposed to have correct rendering/optical depth and so on.
+***
+*** This does not support (yet) elliptical/inclined rings.
+***/
 class WideRing {
+	/** Create instance of the broad ring.
+	***
+	*** The radii are in units of planetary radius.
+	***
+	*** @constructor
+	*** @param {number} innerRadius Inner radius of the ring.
+	*** @param {number} outerRadius Inner radius of the ring.
+	*** @param {colour} colour Colour of the ring.
+	*** @param {number} opacity Opacity of the ring.
+	*** @param {boolean} transparent Whether or not the ring is transparent (if not, opacity will have no effect).
+	**/
 	constructor(name, innerRadius, outerRadius, colour, opacity, transparent) {
 		let numSegments = Math.floor(2*Math.PI*(outerRadius/0.1));
 		this.name =name
@@ -279,8 +425,13 @@ class WideRing {
 		this.object.matrixAutoUpdate = false;
 	}
 
+	/** Get the THREE.js object representing the ring.
+	***
+	*** @returns {THREE.js Object} Object.
+	**/
 	get() {return(this.object);}
 
+	/** Disposes of the material and geometry. **/
 	dispose() {
 		this.geom.dispose()
 		this.mat.dispose()
@@ -288,13 +439,31 @@ class WideRing {
 }
 
 
+
+/** @class Class to contain an orbiting moon and it's orbit.
+***
+*** Note that this is designed to be a simplified representation of a broad
+*** ring, and is not supposed to have correct rendering/texturing and so on.
+***
+*** The orbit itself is also simplified to a circular inclined orbit.
+***/
 class Moon {
+	/** Create instance of the broad ring.
+	***
+	*** The radii are in units of planetary radius.
+	***
+	*** @constructor
+	*** @param {number} radius Radius of the moon.
+	*** @param {number} orbitalRadius Orbital radius of the moon.
+	*** @param {number} orbitalPeriod Period of the orbit [seconds].
+	*** @param {number} orbitalInclination Inclination of the orbit [deg].
+	**/
 	constructor(name, radius, orbitalRadius, orbitalPeriod, orbitalInclination) {
 		this.radius = radius;
 		this.a = orbitalRadius;
 		this.P = orbitalPeriod;
 		this.i = orbitalInclination*Math.PI/180.0;
-		this.n = 2.0*Math.PI/orbitalPeriod;
+		this.n = 2.0*Math.PI/orbitalPeriod;			// mean motion (radians/s)
 		this.name = name;
 		this.numOrbitSegments = Math.floor(2*Math.PI*orbitalRadius/0.1);
 		this.orbitPhase = 0.0;
@@ -314,10 +483,15 @@ class Moon {
 		this.orbitObj.matrix = new THREE.Matrix4().makeRotationX(this.i);
 	}
 
+	/** Step the moon position along in time by a given timestep.
+	***
+	*** @param {number} dt Timestep [seconds].
+	**/
 	step(dt) {
 		this.orbitPhase += this.n*dt;
 	}
 
+	/** Update the world matrix for the moon and its orbit **/
 	update() {
 		var translateMatrix = new THREE.Matrix4().makeTranslation(this.a,0.0,0.0);
 		var orbitMatrix = new THREE.Matrix4().makeRotationZ(this.orbitPhase);
@@ -325,14 +499,28 @@ class Moon {
 		this.moonObj.matrix = inclinationMatrix.multiply(orbitMatrix.multiply(translateMatrix));
 	}
 
+	/** Step the moon position along in time by a given timestep and then update the world matrices.
+	***
+	*** @param {number} dt Timestep [seconds].
+	**/
 	stepAndUpdate(dt) {
 		this.step(dt)
 		this.update()
 	}
 
+	/** Get the THREE.js object representing the moon.
+	***
+	*** @returns {THREE.js Object} Object.
+	**/
 	getMoonObject() {return(this.moonObj);}
+
+	/** Get the THREE.js object representing the moon orbit.
+	***
+	*** @returns {THREE.js Object} Object.
+	**/
 	getOrbitObject() {return(this.orbitObj);}
 
+	/** Disposes of the material and geometry. **/
 	dispose() {
 		this.orbitMat.dispose()
 		this.orbitGeom.dispose()

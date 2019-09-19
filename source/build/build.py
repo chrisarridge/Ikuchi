@@ -1,3 +1,5 @@
+#! /usr/bin/python
+
 """Builds a javascript file that contains: rotation angle fits and base64
 encoded textures. Requires NumPy, SpiceyPy, and SciPy. Matplotlib is optionally
 required for reproducing the plots that test the fits."""
@@ -7,12 +9,22 @@ import matplotlib.pyplot as pl
 import base64
 import datetime
 import platform
+import os
 import scipy.optimize as opt
 import scipy
 import matplotlib
 import spiceypy
 
 show_fit_plots = False
+
+# If you are rebuilding Ikuchi, then you will need to specify the texture
+# locations and filenames.
+texture_path = 'textures/'
+texture_earth = os.path.join(texture_path,'1k_earth_daymap.jpg')
+texture_jup = os.path.join(texture_path,'1k_jupiter.jpg')
+texture_sat = os.path.join(texture_path,'1k_saturn.jpg')
+texture_ura = os.path.join(texture_path,'1k_uranus.jpg')
+texture_nep = os.path.join(texture_path,'1k_neptune.jpg')
 
 # Load the required SPICE kernels to calculate the orientations of the planets.
 print('[ikuchi-build] Loading SPICE kernels')
@@ -24,8 +36,7 @@ spiceypy.furnsh(kernel_path+'generic_kernels/spk/satellites/jup341.bsp')
 spiceypy.furnsh(kernel_path+'generic_kernels/spk/satellites/sat317.bsp')
 spiceypy.furnsh(kernel_path+'generic_kernels/spk/satellites/ura083.bsp')
 spiceypy.furnsh(kernel_path+'generic_kernels/spk/satellites/nep090.bsp')
-spiceypy.furnsh(kernel_path+'/generic_kernels/fk/RSSD0002.TF')
-spiceypy.furnsh('frames.fk')
+spiceypy.furnsh('space-physics-frames.fk')
 
 # Do the calculation from 1950-2050 in steps of 1 day. If we are to extend
 # this to Mercury then we'll require a shorter time step.
@@ -91,6 +102,11 @@ with open('../js/ikuchi-pregenerated.js','w') as fh:
 		[file,type,source,handle] = spiceypy.kdata(i, 'ALL')
 		fh.write('//  {} ({})\n'.format(file,type))
 	fh.write('\n\n\n')
+
+	# Output default planet rotation angle functions.
+	fh.write('//Fits for Default Planet\n')
+	fh.write('function rotzDefault(t){\n\treturn(0.0);\n}\n\n')
+	fh.write('function rotyDefault(t){\n\treturn(0.0);\n}\n\n\n')
 
 	# We have full time series of the two rotation angles we need, so now we
 	# do fits and write the results of the fits to javascript functions we
@@ -175,59 +191,33 @@ with open('../js/ikuchi-pregenerated.js','w') as fh:
 		print('[ikuchi-build] Errors for {}: rotz_rms={:8.6f} rotz_max={:8.6f} roty_rms={:8.6f} roty_max={:8.6f}'.format(p, rotz_rms, rotz_max, roty_rms, roty_max))
 
 
-	# Generate function to map optical depth to opacity.
-	print('[ikuchi-build] Generating optical depth to opacity mapping')
-	optical_depth = np.array([1e-8,1e-7,1e-6,1e-5,1e-4,1e-3,1e-2,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0,2.5,10.0])
-	opacity = 1-np.exp(-optical_depth)
-	ln_opacity = np.log(opacity)
-	desired_opacity = np.array([0.01,0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.7,0.8,0.9,0.97,0.98,0.99])
-	logistic = lambda x, L, x0, k: L/(1.0 + np.exp(-k*(x-x0)))
-	fun = lambda x, a, b, c, x0: logistic(x, 1.0, x0, a/x + b + c/(x*x))
-	popt, pcov = opt.curve_fit(fun, ln_opacity, desired_opacity, p0=[1.0,0.0,0.0,-1.5])
-
-	if show_fit_plots:
-		x = 10**np.linspace(-8,8,500)
-		pl.plot(optical_depth, desired_opacity, 'o')
-		pl.plot(x, fun(np.log(1-np.exp(-x)), popt[0], popt[1], popt[2], popt[3]))
-		pl.xscale('log')
-		pl.show()
-	print('[ikuchi-build] Optical depth function fit parameters: a={:8.6f} b={:8.6f} c={:8.6f} x0={:8.6f}'.format(popt[0], popt[1], popt[2], popt[3]))
-
-	fh.write('// Optical depth to opacity function\n')
-	fh.write('function opticalDepthToOpacity(opticalDepth) {\n')
-	fh.write('\tvar x = Math.log(1-Math.exp(-opticalDepth));\n')
-	fh.write('\tvar k = {}/x + {}/(x*x) + {};\n'.format(popt[0],popt[2],popt[1]))
-	fh.write('\treturn(1.0/(1.0 + Math.exp(-k*(x-{}))));\n'.format(popt[3]))
-	fh.write('}\n\n')
-
-
 	# Convert textures and turn them into base64 encoded strings.
 	print('[ikuchi-build] Encoding textures')
 
 	fh.write('// All textures are sourced from http://planetpixelemporium.com/planets.html.\n')
 	fh.write('// and are Copyright (c) James Hastings-Trew. Please see this website for full copyright details.\n')
 
-	with open('textures/1k_jupiter.jpg', "rb") as fh_in:
+	with open(texture_jup, "rb") as fh_in:
 		map = base64.b64encode(fh_in.read())
 		fh.write('// Jupiter texture map.\n')
 		fh.write('var textureJupiter = \'data:image/jpeg;base64,{}\';\n\n'.format(map.decode()))
 
-	with open('textures/1k_saturn.jpg', "rb") as fh_in:
+	with open(texture_sat, "rb") as fh_in:
 		map = base64.b64encode(fh_in.read())
 		fh.write('// Saturn texture map.\n')
 		fh.write('var textureSaturn = \'data:image/jpeg;base64,{}\';\n\n'.format(map.decode()))
 
-	with open('textures/1k_uranus.jpg', "rb") as fh_in:
+	with open(texture_ura, "rb") as fh_in:
 		map = base64.b64encode(fh_in.read())
 		fh.write('// Uranus texture map.\n')
 		fh.write('var textureUranus = \'data:image/jpeg;base64,{}\';\n\n'.format(map.decode()))
 
-	with open('textures/1k_neptune.jpg', "rb") as fh_in:
+	with open(texture_nep, "rb") as fh_in:
 		map = base64.b64encode(fh_in.read())
 		fh.write('// Neptune texture map.\n')
 		fh.write('var textureNeptune = \'data:image/jpeg;base64,{}\';\n\n'.format(map.decode()))
 
-	with open('textures/1k_earth_daymap.jpg', "rb") as fh_in:
+	with open(texture_earth, "rb") as fh_in:
 		map = base64.b64encode(fh_in.read())
 		fh.write('// Earth texture map (daytime).\n')
 		fh.write('var textureEarthDayMap = \'data:image/jpeg;base64,{}\';\n\n'.format(map.decode()))

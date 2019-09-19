@@ -1,19 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<title>Ikuchi 0.5a (2019-08-23) - Simple Magnetosphere Viewer</title>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-		<link rel="stylesheet" href="css/ikuchi.css">
+		<title>Ikuchi 0.6a (2019-09-19) - Simple Magnetosphere Viewer</title>
+		<meta charset="utf-8"/>
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"/>
 
-		<!--Josh: Moved external file calls to head to prevent page being loaded
-	 	before scripts are initialised -->
-		<script type='text/javascript' src="js/three.min.js"></script>
-		<script type='text/javascript' src="js/OrbitControls.js"></script>
-		<script type='text/javascript' src="js/WebGL.js"></script>
-		<script type='text/javascript' src='js/Projector.js'></script>
-		<script type='text/javascript' src='js/SVGRenderer.js'></script>
-		<script type='text/javascript' src='js/dat.gui.min.js'></script>
+		<meta name="copyright" content="Lancaster University"/>
+		<meta name="author" content="Chris Arridge, c.arridge@lancaster.ac.uk; Josh Wiggs, j.wiggs@lancaster.ac.uk"/>
+
+		<link rel="stylesheet" href="css/ikuchi.css">
+		<link rel="icon" type="image/png" href="images/favicon.png">
+
+		<script type='text/javascript' src="js/lib/three.min.js"></script>
+		<script type='text/javascript' src="js/lib/OrbitControls.js"></script>
+		<script type='text/javascript' src="js/lib/WebGL.js"></script>
+		<script type='text/javascript' src='js/lib/Projector.js'></script>
+		<script type='text/javascript' src='js/lib/SVGRenderer.js'></script>
+		<script type='text/javascript' src='js/lib/dat.gui.min.js'></script>
 		<script type='text/javascript' src='js/ikuchi-pregenerated.js'></script>
 		<script type='text/javascript' src='js/ikuchi-planets.js'></script>
 		<script type='text/javascript' src='js/ikuchi-ringsandstuff.js'></script>
@@ -21,14 +24,36 @@
 	</head>
 
 	<body>
-		<div id="settings-gui-container"></div>
+		<!-- About button modal dialog -->
+		<button id="aboutButton" class="about-button">?</button>
 
+		<div id="aboutBox" class="about-box-container">
+			<div class="about-box-content">
+				<div class="about-box-close-container"><span id="closeButton" class="close-about-box">&times;</span></div>
+				<div class="about-box-text">
+					<h1>Ikuchi v0.6a (2019-09-19)</h1>
+					<p>Ikuchi is designed for quickly viewing the realistic 3D and time-dependent geometry of giant planet magnetospheres, particularly Uranus and Neptune. For more details see the included documentation in <strong>README.md</strong>. The word Ikuchi refers to a <a href="https://en.wikipedia.org/wiki/Ikuchi">supernatural sea creature</a> from <a href="https://en.wikipedia.org/wiki/Y%C5%8Dkai">Japanese legend</a>. In some depictions they appear as a sort of Kraken with tentacles that they uses to envelop passing ships.</p>
+
+					<p>Contributors: <a href="https://www.lancaster.ac.uk/physics/about-us/people/chris-arridge">Chris Arridge</a> (<a href="https://www.lancaster.ac.uk/physics/research/astrophysics/space-and-planetary-physics/">Lancaster University</a>) and <a href="https://www.lancaster.ac.uk/physics/about-us/people/josh-wiggs">Josh Wiggs</a> (<a href="https://www.lancaster.ac.uk/physics/research/astrophysics/space-and-planetary-physics/">Lancaster University</a>).</p>
+
+					<p>The tool also uses texture maps from <a href="http://planetpixelemporium.com/planets.html">Planet Pixel Emporium</a> which are copyright James Hastings-Trew. This about box image uses a texture by <a href="https://www.freepik.com/efe-madrid">efe_madrid</a>. The artwork itself was inspired by the works of <a href="https://en.wikipedia.org/wiki/Toriyama_Sekien">Sano Toyofusa</a> and <a href="https://en.wikipedia.org/wiki/Hokusai">Katsushika Hokusai</a>.</p>
+
+					<p><strong>Copyright (c) 2019 Lancaster University.</strong></p>
+					<p>This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.</p>
+					<p>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the <a href="https://www.gnu.org/licenses/">GNU General Public License</a> for more details.</p>
+					<p>You should have received a copy of the GNU General Public License along with this program.  If not, see <a href="https://www.gnu.org/licenses/">GNU Licences</a>.</p>
+				</div>
+			</div>
+		</div>
+
+		<!-- Launch the app -->
 		<script>
 			// if WebGL is not available then issue an error message
 			if (WEBGL.isWebGLAvailable()==false) {
 				document.body.appendChild(WEBGL.getWebGLErrorMessage());
 			}
 
+			// Make the app, add planets.
 			ikuchi = new Ikuchi();
 			ikuchi.addPlanet(planetDefault);
 			ikuchi.addPlanet(planetEarth);
@@ -37,6 +62,21 @@
 			ikuchi.addPlanet(planetUranus);
 			ikuchi.addPlanet(planetNeptune);
 			ikuchi.init();
+
+			// callbacks to handle the about box.
+			document.getElementById('aboutButton').onclick = function() {
+				document.getElementById('aboutBox').style.display = 'block';
+			}
+			document.getElementById('closeButton').onclick = function() {
+				document.getElementById('aboutBox').style.display = 'none'
+			}
+			window.onclick = function(event) {
+				if (event.target==document.getElementById('aboutBox')) {
+					document.getElementById('aboutBox').style.display = 'none'
+				}
+			}
+
+			// Launch the app.
 			ikuchi.run();
 		</script>
 	</body>
