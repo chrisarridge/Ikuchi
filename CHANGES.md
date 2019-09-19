@@ -1,6 +1,6 @@
 # Change history
 
-## Version 0.6a - 2019-09-19 - Chris Arridge <c.arridge@lancaster.ac.uk>/Lancaster University
+## Version 0.6b - 2019-09-19 - Chris Arridge <c.arridge@lancaster.ac.uk>/Lancaster University
 * Fixed moon orbit bug where moons would continue to orbit the planet when auto
 rotate was turned off. Also fixed bug where moons would not respond to changes in speedup factor.
 * Added GNU General Public Licence v3 to LICENCE.md and to each source file.
