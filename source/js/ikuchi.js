@@ -297,6 +297,7 @@ class Ikuchi {
 		this.gui.add(this, 'dipoleOriginZ').name('Dipole z0').min(-1.0).max(1.0).step(0.02).listen().onChange(this.onChangeDipoleProperties.bind(this));
 		this.gui.add(this, 'rotationPeriod').name('Rotation Period').min(9.0).max(29.0).step(0.05).listen();
 		this.gui.add(this, 'rotationReversed').name('Reverse Rotation').listen().onChange(this.onChangeRotationReversed.bind(this));
+		this.gui.add(this, 'planetaryInfo').name('Show Information');
 		this.gui.add(this, 'captureSVG').name('Capture SVG Code');
 
 		this.guiFolderPlanets = this.gui.addFolder('Planets');
@@ -440,6 +441,40 @@ class Ikuchi {
 		svgRenderer.render(this.scene,this.camera);
 
 		newWindow.document.getElementById('source').value = svgCodeContainer.innerHTML.replace(/<path/g,"\n<path");
+	}
+
+	/** Fetch planet meta data and display **/
+	planetaryInfo() {
+		let cPlanet = this.planetObjects.get(this.planet);
+		var title = cPlanet.name;
+		var name = cPlanet.meta.author;
+		var version = cPlanet.meta.version;
+		var contact = cPlanet.meta.contact;
+		var text = cPlanet.meta.text;
+
+		/** Create information box container **/
+		var box = document.createElement('div');
+		box.className = 'information-box-container';
+		box.id = 'info-box';
+
+		/** Create close button for information box **/
+	  var boxClose = document.createElement('div');
+		boxClose.className = 'close-container';
+		boxClose.innerHTML = '<button id="info-closeButton" class="close" onclick="infoRemove()">&times;</button>';
+
+		/** Populate information box with content **/
+		var boxContent = document.createElement('div');
+		boxContent.className = 'content';
+
+		/**Add text to content **/
+		var contentText = document.createElement('div');
+		contentText.className = 'text';
+		contentText.innerHTML = '<h2>'+title+'</h2>'+'<p>Author(s): '+name+'</p><p>Contact: '+contact+'</p><p>Version: '+version+'</p><p>'+text+'</p>';
+
+		document.body.appendChild(box);
+		box.appendChild(boxContent);
+		boxContent.appendChild(boxClose);
+		boxContent.appendChild(contentText);
 	}
 
 	/** Convert a moon or ring name to a label.
