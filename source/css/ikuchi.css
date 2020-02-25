@@ -61,38 +61,40 @@ canvas {
 /* Container for the about dialog box */
 .about-box-container {
 	display: none;		/* starts off hidden */
-	position: fixed;
+	position: absolute;
 	z-index: 1;
 	left: 0;
 	top: 0;
 	width: 100%;
 	height: 100%;
+
 }
 
-
 /* Container for the about box close button and the close button itself. */
-.about-box-close-container {
+.about-box-container .close-container {
 	margin-right: 0px;
 	margin-left: auto;
+	padding-right: 5px;
+	padding-bottom: 5px;
 	width: 16px;
 	height: 16px;
 	float: right;
 }
-.close-about-box {
+
+.about-box-container .close {
 	color: #ffffff;
 	font-size: 28px;
 	font-weight: bold;
 }
 
-.close-about-box:hover {
+.about-box-container .close:hover {
 	cursor: pointer;
 }
 
 
 /* Content of the about box */
-.about-box-content {
-	width: 1200px;
-	height: 600px;
+.about-box-container .content {
+	width: 75%;
 	border: 2px solid #888888;
 	padding: 20px;
 	margin-left: auto;
@@ -105,13 +107,13 @@ canvas {
 	background-color: #000000;
 	background-repeat: no-repeat;
 	background-position: center;
+	background-size: cover;
 }
 
 
 /* Container for the text in the about box */
-.about-box-text {
-	width: 700px;
-	height: 590px;
+.about-box-container .text {
+	width: 90%;
 	border-radius: 5px 5px 5px 5px;
 	padding: 5px;
 	margin-left: 5px;
@@ -145,5 +147,71 @@ canvas {
 
 .about-button:hover {
 	background-color: #409124;
+	cursor: pointer;
+}
+
+/* Container for the information box */
+.information-box-container {
+	display:block;
+	position: absolute;
+	z-index: 1;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+
+}
+/* Content of the about box */
+.information-box-container .content {
+	width: 75%;
+	border: 2px solid #888888;
+	padding: 20px;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 50px;
+	margin-bottom: auto;
+	position: relative;
+	display: block;
+	background-image: url('../images/background.png');
+	background-color: #000000;
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: cover;
+}
+
+
+/* Container for the text in the about box */
+.information-box-container .text {
+	width: 90%;
+	border-radius: 5px 5px 5px 5px;
+	padding: 5px;
+	margin-left: 5px;
+	margin-right: auto;
+	margin-top: 5px;
+	margin-bottom: auto;
+	background-color: #00000088;		/* slightly transparent */
+	position: relative;
+	display: inline-block;
+}
+/* Container for the about box close button and the close button itself. */
+.information-box-container .close-container {
+	margin-right: 0px;
+	margin-left: auto;
+	padding-right: 5px;
+	padding-bottom: 5px;
+	width: 16px;
+	height: 16px;
+	float: right;
+}
+
+.information-box-container .close {
+	color: #ffffff;
+	font-size: 28px;
+	font-weight: bold;
+	background: none;
+	border: none;
+}
+
+.information-box-container .close:hover {
 	cursor: pointer;
 }
