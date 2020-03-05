@@ -12,7 +12,7 @@ Ikuchi refers to a [supernatural sea creature](https://en.wikipedia.org/wiki/Iku
 Just copy the `Ikuchi` `source` folder somewhere on your machine. The folder can be renamed. The `Ikuchi.html` file must be in the same location as the `js` and `css` folders.
 
 ## Licence
-Copyright (C) 2019 Chris Arridge and Lancaster University
+Copyright (C) 2019-2020 Chris Arridge, Josh Wiggs and Lancaster University
 
 This program is free software: you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software
@@ -72,11 +72,11 @@ The GUI controls include a number of customisation controls that allow the user 
 
 ## Future work
 Features that are being developed are:
-* Add magnetopause and bow shock models.
-* Add custom magnetic field models (e.g., traces from 'geopack' and spherical harmonic internal field models).
 * Modify planets so that they are biaxial ellipsoids to account for the polar flattening of the giant planets.
 * Colour surface by field strength.
 * Add magnetic equator to planet surface.
+* Add magnetopause and bow shock models.
+* Add custom magnetic field models (e.g., traces from 'geopack' and spherical harmonic internal field models).
 * Add current sheet surfaces.
 * Add aurora rendering.
 * Add time series widget to show dipole-Sun vector attack angle.

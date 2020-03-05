@@ -1,7 +1,7 @@
 /**
 ***	@file Provides all the GUI functions for Ikuchi.
 ***	@author Chris Arridge, Lancaster University <c.arridge@lancaster.ac.uk>
-***	@version 6
+***	@version 7
 ***	@copyright Lancaster University (2019)
 ***	@licence GNU GPL v3.
 **/
@@ -104,7 +104,7 @@ class Ikuchi {
 		this.planetObjects = new Map();
 	}
 
-	/** Add planet (defined in an object literal - see ikuchi-planets.js) to the app.
+	/** Add planet (defined in an object literal - see planets.js) to the app.
 	***
 	*** @param {object} pl The object literal defining the planet.
 	**/
@@ -287,15 +287,15 @@ class Ikuchi {
 		// init GUI.
 		this.gui = new dat.GUI({height : 5 * 32 - 1});
 		this.gui.add(this, 'autoRotate').name('Auto rotate')
-		this.gui.add(this, 'speedUp').name('Speed').min(100.0).max(10000.0).step(1.0).listen();
-		this.gui.add(this, 'rotationY').name('Obliquity').min(-90.0).max(90.0).step(5.0).listen();
-		this.gui.add(this, 'rotationZ').name('Orbital Phase').min(0.0).max(360.0).step(10.0).listen();
-		this.gui.add(this, 'dipolePoleColatitude').name('Dipole Colatitude').min(0.0).max(180.0).step(5.0).listen().onChange(this.onChangeDipoleProperties.bind(this));
-		this.gui.add(this, 'dipolePoleLongitude').name('Dipole Longitude').min(0.0).max(360.0).step(5.0).listen().onChange(this.onChangeDipoleProperties.bind(this));
-		this.gui.add(this, 'dipoleOriginX').name('Dipole x0').min(-1.0).max(1.0).step(0.02).listen().onChange(this.onChangeDipoleProperties.bind(this));
-		this.gui.add(this, 'dipoleOriginY').name('Dipole y0').min(-1.0).max(1.0).step(0.02).listen().onChange(this.onChangeDipoleProperties.bind(this));
-		this.gui.add(this, 'dipoleOriginZ').name('Dipole z0').min(-1.0).max(1.0).step(0.02).listen().onChange(this.onChangeDipoleProperties.bind(this));
-		this.gui.add(this, 'rotationPeriod').name('Rotation Period').min(9.0).max(29.0).step(0.05).listen();
+		this.gui.add(this, 'speedUp').name('Speed').min(100.0).max(10000.0).step(1.0);
+		this.gui.add(this, 'rotationY').name('Obliquity').min(-90.0).max(90.0).step(5.0);
+		this.gui.add(this, 'rotationZ').name('Orbital Phase').min(0.0).max(360.0).step(10.0);
+		this.gui.add(this, 'dipolePoleColatitude').name('Dipole Colatitude').min(0.0).max(180.0).step(5.0).onChange(this.onChangeDipoleProperties.bind(this));
+		this.gui.add(this, 'dipolePoleLongitude').name('Dipole Longitude').min(0.0).max(360.0).step(5.0).onChange(this.onChangeDipoleProperties.bind(this));
+		this.gui.add(this, 'dipoleOriginX').name('Dipole x0').min(-1.0).max(1.0).step(0.02).onChange(this.onChangeDipoleProperties.bind(this));
+		this.gui.add(this, 'dipoleOriginY').name('Dipole y0').min(-1.0).max(1.0).step(0.02).onChange(this.onChangeDipoleProperties.bind(this));
+		this.gui.add(this, 'dipoleOriginZ').name('Dipole z0').min(-1.0).max(1.0).step(0.02).onChange(this.onChangeDipoleProperties.bind(this));
+		this.gui.add(this, 'rotationPeriod').name('Rotation Period').min(9.0).max(29.0).step(0.05);
 		this.gui.add(this, 'rotationReversed').name('Reverse Rotation').listen().onChange(this.onChangeRotationReversed.bind(this));
 		this.gui.add(this, 'planetaryInfo').name('Show Information');
 		this.gui.add(this, 'captureSVG').name('Capture SVG Code');
@@ -771,6 +771,11 @@ class Ikuchi {
 			tmp.get().material.color.setStyle(this.discreteRingColour)
 
 			this.guiFolderPlanets.add(this.ringVisible, this.nameToLabel(cPlanet.discreteRingNames[i],'ring')).name(cPlanet.discreteRingNames[i]).onChange(this.onChangeRingVisibility.bind(this));
+		}
+
+		// update GUI display
+		for (i in this.gui.__controllers) {
+			this.gui.__controllers[i].updateDisplay();
 		}
 	}
 

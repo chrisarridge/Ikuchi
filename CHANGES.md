@@ -1,5 +1,18 @@
 # Change history
 
+## Version 0.7 - 2020-03-05 - Josh Wiggs <j.wiggs@lancaster.ac.uk> and Chris Arridge <c.arridge@lancaster.ac.uk>/Lancaster University
+* Configuration data for each of the planets has been changed from a Javascript
+file dumping data into the global space into a JSON file from which each
+planet is setup dynamically.
+* Meta data added to each planet including notes about origins of definitions.
+* Added 'Show Information' button in the GUI to show meta data for each planet.
+* CSS Fixes.
+* Updated Uranus magnetic field definition to reflect that Uranus is rendered using
+the IAU pole definition.  This was incorrectly applied in the previous version.
+* Fixed bug where the NumberControllerBox in DAT.gui could not be adjusted using
+the text boxes.  Added work-around by removing .listen() and adding an explicit
+update when each planet changes (e.g., https://github.com/dataarts/dat.gui/issues/179).
+
 ## Version 0.6b - 2019-09-19 - Chris Arridge <c.arridge@lancaster.ac.uk>/Lancaster University
 * Fixed moon orbit bug where moons would continue to orbit the planet when auto
 rotate was turned off. Also fixed bug where moons would not respond to changes in speedup factor.

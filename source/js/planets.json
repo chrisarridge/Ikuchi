@@ -141,9 +141,9 @@ planets = {
 		"planetTexture": textureUranus,
 		"eventLabels": ["Now","Voyager 2","Vernal Equinox","NH Summer Solstice","Autumnal Equinox","SH Summer Solstice"],
 		"eventTimes": ["1986-01-24","1966-02-03","1985-10-06","2007-12-16","2030-04-19"],
-		"dipolePoleColatitude": -60.0,
-		"dipolePoleLongitude": 48.0,
-		"dipoleOrigin": [-0.02,0.02,0.31],
+		"dipolePoleColatitude": 120.0,
+		"dipolePoleLongitude": 0.0,
+		"dipoleOrigin": [0.0,0.0,0.31],
 		"yFunction": rotyUranus,
 		"zFunction": rotzUranus,
 		"moonNames": ["Mab","Miranda","Ariel","Umbriel","Titania","Oberon"],
@@ -166,10 +166,10 @@ planets = {
 		"meta": {
 			"author": "C. Arridge, Lancaster University & J. A. Wiggs, Lancaster University",
 			"contact":"c.arridge@lancaster.ac.uk",
-			"version": 5,
-			"copyright": "Lancaster University (2019)",
+			"version": 6,
+			"copyright": "Lancaster University (2019-2020)",
 			"licence": "GNU GPL v3",
-			"text": "Equinox and solstice times are from Meeus, J (1997) 'Equinoxes and solstices on Uranus and Neptune' J. Brit. Astronomical Assoc. 107(6), p332, http://adsabs.harvard.edu/full/1997JBAA..107..332M <br><br>Moon and ring data from PDS: https://pds-rings.seti.org/uranus/uranus_tables.html <br><br>Eccentric dipole properties from Connerney, J.E.P. (1993) 'Magnetic fields of the outer planets' J. Geophys. Res. 98(E10) 18659-18679. Note that since the dipole properties were derived in a frame where the north pole was coincident with the rotational pole (i.e., opposite to the IAU definition we use here) the dipole z offset and latitude are swapped from those quoted in Connerney (1993)."
+			"text": "Equinox and solstice times are from Meeus, J (1997) 'Equinoxes and solstices on Uranus and Neptune' J. Brit. Astronomical Assoc. 107(6), p332, http://adsabs.harvard.edu/full/1997JBAA..107..332M <br><br>Moon and ring data from PDS: https://pds-rings.seti.org/uranus/uranus_tables.html <br><br>Eccentric dipole properties from Connerney, J.E.P. (1993) 'Magnetic fields of the outer planets' J. Geophys. Res. 98(E10) 18659-18679. Note that since the dipole properties were derived in a frame where the north pole was coincident with the rotational pole (i.e., opposite to the IAU definition we use here) the colatitude is swapped from 60 degrees quoted in Connerney (1993) to 120 degrees to place the dipole north pole in the rotational northern hemisphere.  We also invert the z0 position of the dipole from -0.31 to 0.31 Ru to reflect the definitions used here.  In lieu of a new fit in the IAU coordinate system we simply set the dipole longitude, x0 and y0 to zero."
 		}
 	},
 	"planetNeptune": {
