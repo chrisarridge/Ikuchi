@@ -1,6 +1,8 @@
 # Ikuchi - Simple Magnetosphere Viewer #
 **Contributors: [Chris Arridge](https://www.lancaster.ac.uk/physics/about-us/people/chris-arridge), Lancaster University, c.arridge@lancaster.ac.uk; [Josh Wiggs](https://www.lancaster.ac.uk/physics/about-us/people/josh-wiggs), Lancaster University, j.wiggs@lancaster.ac.uk**
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3451443.svg)](https://doi.org/10.5281/zenodo.3451443)
+
 `Ikuchi` is an HTML/Javascript application which uses [Three.JS](https://threejs.org/) to render 3D views of solar system magnetospheres. It is designed for quickly viewing the realistic 3D and time-dependent geometry of giant planet magnetospheres, particularly Uranus and Neptune. The scenes are viewed in a coordinate system with one axis pointing from the planet towards the Sun, and another pointing from the planet in the direction of its orbital motion. You may know this as a "Planetary Solar Orbital" coordinate system, e.g., Geocentric Solar Ecliptic (GSE) at Earth, or Kronocentric Solar Orbital (KSO) at Saturn. The orientation of the planets as a function of time is computed from non-linear functions fitted to data from NASA/JPL [Navigation and Ancillary Information Facility (NAIF)](https://naif.jpl.nasa.gov/naif/)'s [SPICE](https://naif.jpl.nasa.gov/naif/spiceconcept.html) system. The RMS errors associated with fitting to SPICE data are no larger than 0.06 deg, and most planets have a maximum errors no larger than around 0.03 degrees, apart from Jupiter and Saturn, which have maximum errors of around 0.2 degrees. Although the fits are generally very accurate, `Ikuchi` is not designed for accurate ephemeris. The orbits of natural satellites are especially simplified.
 
 ## Origins of the name `Ikuchi`
