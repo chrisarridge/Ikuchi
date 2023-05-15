@@ -1,13 +1,13 @@
 /**
 ***	@file Provides all the GUI functions for Ikuchi.
 ***	@author Chris Arridge, Lancaster University <c.arridge@lancaster.ac.uk>
-***	@version 7
-***	@copyright Lancaster University (2019)
+***	@version 8
+***	@copyright Lancaster University (2023)
 ***	@licence GNU GPL v3.
 **/
 
 /**
-*** Copright (C) 2019 Chris Arridge, Lancaster University
+*** Copright (C) 2019-2023 Chris Arridge, Lancaster University
 ***
 *** This program is free software: you can redistribute it and/or modify
 *** it under the terms of the GNU General Public License as published by
@@ -34,6 +34,8 @@ class Ikuchi {
 	constructor() {
 		this.autoRotate = true;			// should the planet and sytem autorotate?
 		this.speedUp = 3600;			// speedup factor from reality (3600 means that in one second of real time, an hour has passed in the simulated view)
+		this.autoSeason = false;		// should the seasons automatically advance in time.
+		this.seasonSpeed = 60;			// speed of the seasonal advance - one is one day per second.
 
 		// Colatitude and longitude of the dipole pole, and the origin of the dipole.
 		this.dipolePoleColatitude = 10.0;
@@ -62,6 +64,7 @@ class Ikuchi {
 		this.drawFieldLines = true;
 		this.drawNorthSouthLabels = true;
 		this.cameraType = 'Perspective';
+		this.drawDateBox = false;
 
 		// Colours. (spare: red #C1292E, peach #D6704D)
 		this.bgColour = '#FDFFFC';						// white FDFFFC
@@ -127,6 +130,7 @@ class Ikuchi {
 		this.initRenderer();
 		this.initControls();
 		this.initGui();
+		document.getElementById('dateBox').style.visibility = "hidden";
 		window.addEventListener('resize', this.onWindowResize.bind(this), false);
 	}
 
@@ -286,7 +290,7 @@ class Ikuchi {
 	initGui() {
 		// init GUI.
 		this.gui = new dat.GUI({height : 5 * 32 - 1});
-		this.gui.add(this, 'autoRotate').name('Auto rotate')
+		this.gui.add(this, 'autoRotate').name('Auto Rotate')
 		this.gui.add(this, 'speedUp').name('Speed').min(100.0).max(10000.0).step(1.0);
 		this.gui.add(this, 'rotationY').name('Obliquity').min(-90.0).max(90.0).step(5.0);
 		this.gui.add(this, 'rotationZ').name('Orbital Phase').min(0.0).max(360.0).step(10.0);
@@ -297,6 +301,8 @@ class Ikuchi {
 		this.gui.add(this, 'dipoleOriginZ').name('Dipole z0').min(-1.0).max(1.0).step(0.02).onChange(this.onChangeDipoleProperties.bind(this));
 		this.gui.add(this, 'rotationPeriod').name('Rotation Period').min(9.0).max(29.0).step(0.05);
 		this.gui.add(this, 'rotationReversed').name('Reverse Rotation').listen().onChange(this.onChangeRotationReversed.bind(this));
+		this.gui.add(this, 'autoSeason').name('Auto Season');
+		this.gui.add(this, 'seasonSpeed').name('Season Speed').min(60.0).max(600.0).step(1.0);
 		this.gui.add(this, 'planetaryInfo').name('Show Information');
 		this.gui.add(this, 'captureSVG').name('Capture SVG Code');
 
@@ -316,6 +322,7 @@ class Ikuchi {
 		this.guiFolderOptions = this.gui.addFolder('Options');
 		this.guiFolderOptions.add(this, 'drawFieldLines').name('Draw field lines').onChange(this.onChangefieldLineVisibilty.bind(this));
 		this.guiFolderOptions.add(this, 'drawNorthSouthLabels').name('Draw north/south labels').onChange(this.onChangeDrawNSLabels.bind(this));
+		this.guiFolderOptions.add(this, 'drawDateBox').name('Draw date label').onChange(this.onChangeDrawDateBox.bind(this));
 		this.guiFolderOptions.add(this, 'cameraType', ['Perspective','Orthographic']).name('Camera').onChange(this.onChangeCamera.bind(this));
 
 		this.guiFolderColours = this.gui.addFolder('Colours');
@@ -392,7 +399,15 @@ class Ikuchi {
 			let i;
 			for (i=0; i<this.moons.length; i++) this.moons[i].stepAndUpdate(dt*1e-3*this.speedUp);
 		}
-	}
+
+		if (this.autoSeason) {
+			// adjust season time.
+			let t = new Date(this.time);
+			t.setDate(t.getDate() + this.seasonSpeed*dt*1e-3);
+			this.time = t.getFullYear().toString() + '-' + (t.getMonth()+1).toString().padStart(2,'0') + '-' + t.getDate().toString().padStart(2,'0');
+			this.onChangeTime();
+		}
+}
 
 	/** Update the rotation matrices for the planet and planetary sytem. **/
 	update() {
@@ -570,13 +585,14 @@ class Ikuchi {
 		this.oMagneticField.matrix = tMatrix.multiply(zMatrix.multiply(yMatrix));
 	}
 
-	/** Update obliquity and orbtial phase angles for a user-selected timestamp. **/
+	/** Update obliquity and orbtial phase angles for a user-selected timestamp and update the datebox. **/
 	onChangeTime() {
 		let t = new Date(this.time);
 		let cPlanet = this.planetObjects.get(this.planet);
 		this.rotationY = cPlanet.yFunction(t.getTime());
 		this.rotationZ = cPlanet.zFunction(t.getTime()) % 360.0;
 		this.update();
+		document.getElementById('dateBox').innerHTML = this.time;
 	}
 
 	/** Update planet object when planet is a retrograde rotator. **/
@@ -898,6 +914,14 @@ class Ikuchi {
 		this.oDipoleVector.line.material.color.setStyle(this.dipoleVectorColour);
 	}
 
+	/** Show or hide the date box **/
+	onChangeDrawDateBox() {
+		if (this.drawDateBox) {
+			document.getElementById('dateBox').style.visibility = "visible";
+		} else {
+			document.getElementById('dateBox').style.visibility = "hidden";
+		}
+	}
 	/** Update the renderer and camera when the window is resized. **/
 	onWindowResize() {
 		this.camera.aspect = window.innerWidth/window.innerHeight;
