@@ -2,12 +2,12 @@
 ***	@file Provides all the rendering functions for Ikuchi.
 ***	@author Chris Arridge, Lancaster University <c.arridge@lancaster.ac.uk>
 ***	@version 4
-***	@copyright Lancaster University (2019)
+***	@copyright Lancaster University (2023)
 ***	@licence GNU GPL v3.
 **/
 
 /**
-*** Copright (C) 2019 Chris Arridge, Lancaster University
+*** Copright (C) 2019-2023 Chris Arridge, Lancaster University
 ***
 *** This program is free software: you can redistribute it and/or modify
 *** it under the terms of the GNU General Public License as published by
