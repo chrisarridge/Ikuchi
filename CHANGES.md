@@ -1,5 +1,9 @@
 # Change history
 
+## Version 0.8 - 2023-05-15 - Chris Arridge <c.arridge@lancaster.ac.uk>/Lancaster University
+* Added ability to automatically advance through seasons.
+* Added an easily readable date element for use in generating movies, but which can be hidden.
+
 ## Version 0.7 - 2020-03-05 - Josh Wiggs <j.wiggs@lancaster.ac.uk> and Chris Arridge <c.arridge@lancaster.ac.uk>/Lancaster University
 * Configuration data for each of the planets has been changed from a Javascript
 file dumping data into the global space into a JSON file from which each

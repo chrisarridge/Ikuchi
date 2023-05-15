@@ -14,7 +14,7 @@ Ikuchi refers to a [supernatural sea creature](https://en.wikipedia.org/wiki/Iku
 Just copy the `Ikuchi` `source` folder somewhere on your machine. The folder can be renamed. The `Ikuchi.html` file must be in the same location as the `js` and `css` folders.
 
 ## Licence
-Copyright (C) 2019-2020 Chris Arridge, Josh Wiggs and Lancaster University
+Copyright (C) 2019-2023 Chris Arridge, Josh Wiggs and Lancaster University
 
 This program is free software: you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software
@@ -53,7 +53,7 @@ Hence, the orange and green vectors identify the orbital plane of the planet, wh
 ### GUI Controls
 The GUI at the top right offers a range of options. For example, instead of using the mouse to move around the planet, the `Views` tab contains five pre-set views. The options panel also allows the user to swap between `perspective` and `orthographic` views. If you want to view the system in an isometric projection, change the camera to `orthographic` and select the `oblique` view.
 
-By default the planet auto-rotates at the specified rotation period. This behaviour can be turned off by deselecting "Auto rotate planet". The rotation period can be changed at the bottom of this set of options with "Rotation Period", by either typing in a new number, or dragging the blue bar. By default one second of real time represents 3600 seconds (1 hour) of simulation time, so that the planet rotates once every 24 seconds. This can be changed through the "Speed" setting. Changing to smaller values with slow the simulation down towards real-time, increasing will speed up the simulation.
+By default the planet auto-rotates at the specified rotation period. This behaviour can be turned off by deselecting "Auto rotate planet". The rotation period can be changed at the bottom of this set of options with "Rotation Period", by either typing in a new number, or dragging the blue bar. By default one second of real time represents 3600 seconds (1 hour) of simulation time, so that the planet rotates once every 24 seconds. This can be changed through the "Speed" setting. Changing to smaller values with slow the simulation down towards real-time, increasing will speed up the simulation.  The seasons can also be automatically advanced with the "auto season" button and where the speed is controlled with the "Season Speed" slider.
 
 Obliquity and Orbital Phase define the orientation of the planetary system. Obliquity changes the axial tilt of the planet, relative to the orbital plane, and orbital phase changes the position of the planet in it's orbit around the Sun. The dipole magnetic field can be adjusted with the five parameters in the main panel; they set the colatitude of the magnetic pole ("Dipole Colatitude"), the longitude of the magnetic pole ("Dipole Longitude") and the centre of the dipole ("Dipole Centre"). For example, Saturn's dipole has an offset of 0.04 planetary radii to the north, hence the centre would be 0.0 in the `x0` and `y0` widgets, and `0.04` in the `z0` widget.
 
